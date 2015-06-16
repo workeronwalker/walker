@@ -1,11 +1,14 @@
 package com.example.walker;
 
+import com.baidu.mapapi.SDKInitializer;
+
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -36,13 +39,14 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_main);
 
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
 
-		// Set up the drawer.
+		// Set up the drawer. 显示左上角那个三条横杠的按钮
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
@@ -55,6 +59,8 @@ public class MainActivity extends ActionBarActivity implements
 				.beginTransaction()
 				.replace(R.id.container,
 						PlaceholderFragment.newInstance(position + 1)).commit();
+		//Intent actIntent = new Intent(MainActivity.this, OutdoorActivity.class);
+		//startActivity(actIntent);
 	}
 
 	public void onSectionAttached(int number) {

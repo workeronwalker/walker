@@ -13,6 +13,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-    
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="hello_jiaxun">计数器的布局</string>
+    <string name="title_activity_outdoor">OutdoorActivity</string>
+    <string name="title_activity_step_count">StepCountActivity</string>
 
 </resources>

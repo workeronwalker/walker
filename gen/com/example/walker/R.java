@@ -1661,7 +1661,7 @@ containing a value of this type.
         public static final int activity_chooser_view_content=0x7f090021;
         public static final int always=0x7f090014;
         public static final int beginning=0x7f09001b;
-        public static final int button1=0x7f090044;
+        public static final int bmapView=0x7f090042;
         public static final int checkbox=0x7f090029;
         public static final int collapseActionView=0x7f090015;
         public static final int container=0x7f090040;
@@ -1700,7 +1700,7 @@ containing a value of this type.
         public static final int search_plate=0x7f090039;
         public static final int search_src_text=0x7f09003a;
         public static final int search_voice_btn=0x7f09003e;
-        public static final int section_label=0x7f090042;
+        public static final int section_label=0x7f090044;
         public static final int shortcut=0x7f09002a;
         public static final int showCustom=0x7f090010;
         public static final int showHome=0x7f090011;
@@ -1708,7 +1708,7 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int submit_area=0x7f09003c;
         public static final int tabMode=0x7f09000c;
-        public static final int textView1=0x7f090043;
+        public static final int test=0x7f090043;
         public static final int title=0x7f090027;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
@@ -1765,13 +1765,19 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
         public static final int activity_main=0x7f030017;
-        public static final int fragment_main=0x7f030018;
-        public static final int fragment_navigation_drawer=0x7f030019;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
+        public static final int activity_outdoor=0x7f030018;
+        public static final int activity_setting=0x7f030019;
+        public static final int activity_step_count=0x7f03001a;
+        public static final int fragment_main=0x7f03001b;
+        public static final int fragment_navigation_drawer=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class menu {
         public static final int global=0x7f0c0000;
         public static final int main=0x7f0c0001;
+        public static final int outdoor=0x7f0c0002;
+        public static final int setting=0x7f0c0003;
+        public static final int step_count=0x7f0c0004;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1833,8 +1839,13 @@ containing a value of this type.
         public static final int action_example=0x7f0a001a;
         public static final int action_settings=0x7f0a001b;
         public static final int app_name=0x7f0a0010;
+        public static final int hello_jiaxun=0x7f0a001e;
+        public static final int hello_world=0x7f0a001d;
         public static final int navigation_drawer_close=0x7f0a0019;
         public static final int navigation_drawer_open=0x7f0a0018;
+        public static final int title_activity_outdoor=0x7f0a001f;
+        public static final int title_activity_setting=0x7f0a001c;
+        public static final int title_activity_step_count=0x7f0a0020;
         public static final int title_section1=0x7f0a0011;
         public static final int title_section2=0x7f0a0012;
         public static final int title_section3=0x7f0a0013;
