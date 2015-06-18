@@ -355,10 +355,10 @@ int id action_settings 0x7f090045
 int id activity_chooser_view_content 0x7f090021
 int id always 0x7f090014
 int id beginning 0x7f09001b
-int id bmapView 0x7f090042
 int id checkbox 0x7f090029
 int id collapseActionView 0x7f090015
 int id container 0x7f090040
+int id container_outdoor 0x7f090042
 int id decor_content_parent 0x7f09002f
 int id default_activity_button 0x7f090024
 int id dialog 0x7f090019
