@@ -11,9 +11,11 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 //import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.ArcOptions;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.DotOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -21,6 +23,8 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 
 import android.support.v4.widget.DrawerLayout;
@@ -38,6 +42,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class OutdoorActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -69,7 +74,9 @@ public class OutdoorActivity extends ActionBarActivity implements
 		= com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy;
 
 	private boolean isFirstLoc = true;
-	List<LatLng> points = new ArrayList<LatLng>();
+	private List<LatLng> points = new ArrayList<LatLng>();
+	private int pointCounts = 0;
+	private TextView outdoorRadius;
 
 	// private CurrentMaker mCurrentMarker
 
@@ -81,6 +88,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_outdoor);
 		FrameLayout container = (FrameLayout) findViewById(R.id.container_outdoor);
+		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 		// 初始化地图
 		//mMapView = (MapView) findViewById(R.id.bmapView);
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
@@ -272,6 +280,27 @@ public class OutdoorActivity extends ActionBarActivity implements
 						location.getLongitude());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
 				mBaiduMap.animateMapStatus(u);
+			}
+			outdoorRadius.setText(""+location.getRadius());
+			pointCounts++;
+			if (!isFirstLoc /*&& pointCounts >= 7*/ && location.getRadius() <= 10) {
+				pointCounts = 0;
+				points.add(new LatLng(location.getLatitude(), location.getLongitude()));
+				if (points.size()>=3) {
+					/*
+					OverlayOptions ooArc = new ArcOptions().color(0xAA00FF00).width(4)
+							.points(points.get(points.size()-1), 
+									points.get(points.size()-2),
+									points.get(points.size()-3));
+									*/
+					/*
+					OverlayOptions ooArc = new DotOptions().
+							center(points.get(points.size()-1));
+							*/
+					OverlayOptions ooArc = new PolylineOptions().points(points);
+					mBaiduMap.addOverlay(ooArc);
+					Log.i("BDmap", "there should be an Arc");
+				}
 			}
 		}
 
