@@ -18,5 +18,6 @@
     <string name="hello_jiaxun">计数器的布局</string>
     <string name="title_activity_outdoor">OutdoorActivity</string>
     <string name="title_activity_step_count">StepCountActivity</string>
+    <string name="my_string">YoureSB</string>
 
 </resources>

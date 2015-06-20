@@ -1,4 +1,5 @@
 <!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
+
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -14,12 +15,24 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <!-- 计步器布局 -->>
-    <TextView
+        android:layout_height="match_parent" >
+
+        <TextView
+        android:id="@+id/numOfSteps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_jiaxun" />
+        android:layout_below="@+id/section_label"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="200dp"
+        android:layout_toRightOf="@+id/section_label"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/abc_text_size_display_4_material" />
+
+    </FrameLayout>
+
+    <!-- 计步器布局 -->
+    
     
 
     <!--

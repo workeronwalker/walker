@@ -49,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements
 		// Set up the drawer. 显示左上角那个三条横杠的按钮
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		
 	}
 
 	@Override
