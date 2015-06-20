@@ -1,5 +1,7 @@
 package com.example.walker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -67,6 +69,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 		= com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy;
 
 	private boolean isFirstLoc = true;
+	List<LatLng> points = new ArrayList<LatLng>();
 
 	// private CurrentMaker mCurrentMarker
 
