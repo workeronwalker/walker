@@ -1,6 +1,11 @@
 package com.example.walker;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> origin/master
 =======
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +24,10 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import com.baidu.mapapi.map.DotOptions;
+>>>>>>> origin/master
 =======
 import com.baidu.mapapi.map.DotOptions;
 >>>>>>> origin/master
@@ -49,6 +58,10 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import android.widget.TextView;
+>>>>>>> origin/master
 =======
 import android.widget.TextView;
 >>>>>>> origin/master
@@ -84,6 +97,12 @@ public class OutdoorActivity extends ActionBarActivity implements
 
 	private boolean isFirstLoc = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	private List<LatLng> points = new ArrayList<LatLng>();
+	private int pointCounts = 0;
+	private TextView outdoorRadius;
+>>>>>>> origin/master
 =======
 	private List<LatLng> points = new ArrayList<LatLng>();
 	private int pointCounts = 0;
@@ -101,6 +120,10 @@ public class OutdoorActivity extends ActionBarActivity implements
 		setContentView(R.layout.activity_outdoor);
 		FrameLayout container = (FrameLayout) findViewById(R.id.container_outdoor);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
+>>>>>>> origin/master
 =======
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 >>>>>>> origin/master
