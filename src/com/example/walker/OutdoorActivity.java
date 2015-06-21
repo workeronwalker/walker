@@ -29,6 +29,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -80,7 +81,11 @@ public class OutdoorActivity extends ActionBarActivity implements
 	private boolean isFirstLoc = true;
 	private List<LatLng> points = new ArrayList<LatLng>();
 	private int pointCounts = 0;
-	private TextView outdoorRadius;
+	private TextView outdoorRadius, outdoorHi, outdoorLo;
+	double hi = 0;
+	double lo = 99999;
+	double runTime;
+	double runSpeed;
 	// private CurrentMaker mCurrentMarker
 
 	@Override
@@ -92,7 +97,8 @@ public class OutdoorActivity extends ActionBarActivity implements
 		setContentView(R.layout.activity_outdoor);
 		FrameLayout container = (FrameLayout) findViewById(R.id.container_outdoor);
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
-		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
+		outdoorLo = (TextView)findViewById(R.id.outdoor_lo);
+		outdoorHi = (TextView)findViewById(R.id.outdoor_hi);
 		// 初始化地图
 		//mMapView = (MapView) findViewById(R.id.bmapView);
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
@@ -160,10 +166,11 @@ public class OutdoorActivity extends ActionBarActivity implements
 							//locData.direction = x;
 							// 重新设置当前位置数据
 							mBaiduMap.setMyLocationData(locData);
+							/*
 							LatLng ll = new LatLng(locData.latitude,
 									locData.longitude);
 							MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-							mBaiduMap.animateMapStatus(u);
+							mBaiduMap.animateMapStatus(u);*/
 						}
 						//myLocationOverlay.setData(locData);
 						//mMapView.refresh();
@@ -245,6 +252,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 	public class MyLocationListener implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
+			runTime++; // 每次收到请求，说明时间度过了一秒
 			if (location == null)
 				return;
 			/* 本节代码测试用
@@ -288,23 +296,30 @@ public class OutdoorActivity extends ActionBarActivity implements
 			outdoorRadius.setText(""+location.getRadius());
 
 			if (!isFirstLoc /*&& pointCounts >= 7*/ && location.getRadius() <= 10) {
-				
+				// 精度超过9才加入点阵。
 				pointCounts++;
 				points.add(new LatLng(location.getLatitude(), location.getLongitude()));
-				if (points.size()>=3 && pointCounts>2) {
+				if (points.size()>=3 && pointCounts>=1) {
+					// 加入点阵的数量超过2，才开始绘制新曲线。
 					pointCounts = 0;
 					
-					OverlayOptions ooArc = new ArcOptions().color(0xAA00FF00).width(4)
+					OverlayOptions ooArc = new ArcOptions().color(getSpeedColor(runTime, 
+							points.get(points.size()-1), points.get(points.size()-2))).width(12)
 							.points(points.get(points.size()-1), 
 									points.get(points.size()-2),
 									points.get(points.size()-3));
-
+					
 					/*
 					OverlayOptions ooArc = new DotOptions().
 							center(points.get(points.size()-1));
 							*/
-					//OverlayOptions ooArc = new PolylineOptions().points(points);
-					mBaiduMap.addOverlay(ooArc);
+					OverlayOptions ooPoly = new PolylineOptions()
+						.color(getSpeedColor(runTime, points.get(points.size()-1),
+								points.get(points.size()-2)))
+						.width(10)
+						.points(points.subList(points.size()-2, points.size()));
+					mBaiduMap.addOverlay(ooPoly);
+					runTime = 0;	// 重新计时。
 					Log.i("BDmap", "there should be an Arc");
 				}
 			}
@@ -313,6 +328,32 @@ public class OutdoorActivity extends ActionBarActivity implements
 		public void onREceivePoi(BDLocation poiLocation) {
 
 		}
+	}
+	private int getSpeedColor(double time, LatLng point1, LatLng point2) { // 1 - 4 - 7
+		double distance = DistanceUtil.getDistance(point1, point2);
+		double speed = (distance / time) * 0.62 + runSpeed * 0.38;
+		runSpeed = speed;
+		if (speed > hi) {
+			hi = speed;
+			outdoorHi.setText(""+hi);
+		}
+		if (speed < lo) {
+			lo = speed;
+			outdoorLo.setText(""+lo);
+		}
+		if (speed <= 1)			// [0, 1]
+			return 0xAAFF0000;
+		else if (speed >= 7)	// [7, ~]
+			return 0xAA00FF00;
+		else if (speed <= 4) { 	// [1, 4]
+			int ret = (0xAAFF0000+(int)(21760*(speed-1)));
+			return ret - ret%256;
+		}
+		else if (speed >= 4) { 	// [4, 7]
+			int ret = (0xAAFFFF00-(int)(5570560*(speed-4)));
+			return ret - ret%65536 - 256;
+		}
+		return 0xAAFFFF00;
 	}
 
 	@Override
