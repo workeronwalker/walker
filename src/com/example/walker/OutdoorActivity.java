@@ -1,15 +1,9 @@
 package com.example.walker;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> origin/master
-=======
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> origin/master
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,14 +17,8 @@ import com.baidu.mapapi.map.ArcOptions;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import com.baidu.mapapi.map.DotOptions;
->>>>>>> origin/master
-=======
 import com.baidu.mapapi.map.DotOptions;
->>>>>>> origin/master
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -57,14 +45,8 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import android.widget.TextView;
->>>>>>> origin/master
-=======
 import android.widget.TextView;
->>>>>>> origin/master
 
 public class OutdoorActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -96,19 +78,9 @@ public class OutdoorActivity extends ActionBarActivity implements
 		= com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy;
 
 	private boolean isFirstLoc = true;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	private List<LatLng> points = new ArrayList<LatLng>();
 	private int pointCounts = 0;
 	private TextView outdoorRadius;
->>>>>>> origin/master
-=======
-	private List<LatLng> points = new ArrayList<LatLng>();
-	private int pointCounts = 0;
-	private TextView outdoorRadius;
->>>>>>> origin/master
-
 	// private CurrentMaker mCurrentMarker
 
 	@Override
@@ -119,14 +91,8 @@ public class OutdoorActivity extends ActionBarActivity implements
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_outdoor);
 		FrameLayout container = (FrameLayout) findViewById(R.id.container_outdoor);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
->>>>>>> origin/master
-=======
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
->>>>>>> origin/master
 		// 初始化地图
 		//mMapView = (MapView) findViewById(R.id.bmapView);
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
