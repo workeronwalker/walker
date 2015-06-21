@@ -320,22 +320,24 @@ public class OutdoorActivity extends ActionBarActivity implements
 				mBaiduMap.animateMapStatus(u);
 			}
 			outdoorRadius.setText(""+location.getRadius());
-			pointCounts++;
+
 			if (!isFirstLoc /*&& pointCounts >= 7*/ && location.getRadius() <= 10) {
-				pointCounts = 0;
+				
+				pointCounts++;
 				points.add(new LatLng(location.getLatitude(), location.getLongitude()));
-				if (points.size()>=3) {
-					/*
+				if (points.size()>=3 && pointCounts>2) {
+					pointCounts = 0;
+					
 					OverlayOptions ooArc = new ArcOptions().color(0xAA00FF00).width(4)
 							.points(points.get(points.size()-1), 
 									points.get(points.size()-2),
 									points.get(points.size()-3));
-									*/
+
 					/*
 					OverlayOptions ooArc = new DotOptions().
 							center(points.get(points.size()-1));
 							*/
-					OverlayOptions ooArc = new PolylineOptions().points(points);
+					//OverlayOptions ooArc = new PolylineOptions().points(points);
 					mBaiduMap.addOverlay(ooArc);
 					Log.i("BDmap", "there should be an Arc");
 				}
