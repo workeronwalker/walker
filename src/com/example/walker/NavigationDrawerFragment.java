@@ -122,6 +122,7 @@ public class NavigationDrawerFragment extends Fragment {
 						//Intent act_intent = new Intent(getActivity(), OutdoorActivity.class);
 						
 						//startActivity(actntent);
+						
 						getActivity().startActivity(act_intent);
 						
 					}
@@ -294,14 +295,14 @@ public class NavigationDrawerFragment extends Fragment {
 	/**
 	 * onOptionsItemSelected负责处理左上三个点左侧的按钮
 	 */
-	/*
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-
+		
 		if (item.getItemId() == R.id.action_example) {
 			Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
 					.show();
@@ -309,7 +310,7 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 
 		return super.onOptionsItemSelected(item);
-	}*/
+	}
 
 	/**
 	 * Per the navigation drawer design guidelines, updates the action bar to

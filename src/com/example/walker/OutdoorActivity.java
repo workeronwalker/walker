@@ -231,7 +231,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 		getMenuInflater().inflate(R.menu.outdoor, menu);
 		return true;
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
