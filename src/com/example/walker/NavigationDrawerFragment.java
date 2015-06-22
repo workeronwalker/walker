@@ -278,7 +278,7 @@ public class NavigationDrawerFragment extends Fragment {
 		// Forward the new configuration the drawer toggle component.
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
-
+	/*
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// If the drawer is open, show the global app actions in the action bar.
@@ -290,10 +290,14 @@ public class NavigationDrawerFragment extends Fragment {
 			showGlobalContextActionBar();
 		}
 		super.onCreateOptionsMenu(menu, inflater);
-	}
-
+	}*/
+	/**
+	 * onOptionsItemSelected负责处理左上三个点左侧的按钮
+	 */
+	/*
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
@@ -305,7 +309,7 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 
 	/**
 	 * Per the navigation drawer design guidelines, updates the action bar to

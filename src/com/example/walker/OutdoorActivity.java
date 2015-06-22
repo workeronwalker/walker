@@ -224,7 +224,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
-
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -242,7 +242,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {

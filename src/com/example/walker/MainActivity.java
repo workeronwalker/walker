@@ -97,7 +97,7 @@ public class MainActivity extends ActionBarActivity implements
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
 	}
-
+	/*	注释掉这一段代码可以移除左上角三个点。
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -109,8 +109,8 @@ public class MainActivity extends ActionBarActivity implements
 			return true;
 		}
 		return super.onCreateOptionsMenu(menu);
-	}
-
+	}*/
+	/*
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -121,7 +121,7 @@ public class MainActivity extends ActionBarActivity implements
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 
 	/**
 	 * A placeholder fragment containing a simple view.
