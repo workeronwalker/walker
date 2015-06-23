@@ -29,7 +29,8 @@ public class MainActivity extends ActionBarActivity implements
 	 * navigation drawer.
 	 */
 	private NavigationDrawerFragment mNavigationDrawerFragment;
-
+	private DrawerLayout mDrawerLayout;
+	//private Layout mOutdoorLayout
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -39,27 +40,32 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_main);
-
+		mTitle = getTitle();
+		
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-		mTitle = getTitle();
+		
 
 		// Set up the drawer. 显示左上角那个三条横杠的按钮
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
 	}
-
+	
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
+		
+		/* // 在NavigationDrawerFragment部分已经实现
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager
 				.beginTransaction()
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
+				.replace(R.id.frame_container,
+						PlaceholderFragment.newInstance(position + 1)).commit();*/
+		
 		//Intent actIntent = new Intent(MainActivity.this, OutdoorActivity.class);
 		//startActivity(actIntent);
 	}

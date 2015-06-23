@@ -24,7 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class HealthStatisticsFragment extends Fragment {
+public class OutdoorFragment extends Fragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -38,9 +38,9 @@ public class HealthStatisticsFragment extends Fragment {
          ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
          getActivity().setTitle(planet);
          return rootView;*/
-		View mView = inflater.inflate(R.layout.fragment_health_statistics, container, false);
+		View mView = inflater.inflate(R.layout.fragment_step_count, container, false);
 		//mView.findViewById(id)
-		getActivity().setTitle("健康信息统计");
+		getActivity().setTitle("户外模式");
 		return mView;
     }
 }

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
@@ -104,27 +105,7 @@ public class NavigationDrawerFragment extends Fragment {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {	// 点击事件添加点
-						selectItem(position);
-						Intent act_intent;
-						switch(position) {
-							case 0:
-								act_intent = new Intent(getActivity(), StepCountActivity.class);
-								break;
-							case 3:
-								act_intent = new Intent(getActivity(), OutdoorActivity.class);
-								break;
-							case 6:
-								act_intent = new Intent(getActivity(), SettingActivity.class);
-								break;
-							default:
-								act_intent = new Intent(getActivity(), SettingActivity.class);
-						}
-						//Intent act_intent = new Intent(getActivity(), OutdoorActivity.class);
-						
-						//startActivity(actntent);
-						
-						getActivity().startActivity(act_intent);
-						
+						selectItem(position);						
 					}
 				});
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
@@ -149,7 +130,7 @@ public class NavigationDrawerFragment extends Fragment {
 	/**
 	 * Users of this fragment must call this method to set up the navigation
 	 * drawer interactions.
-	 *
+	 * 设置侧拉菜单。目前需要在每个activity中调用。
 	 * @param fragmentId
 	 *            The android:id of this fragment in its activity's layout.
 	 * @param drawerLayout
@@ -235,6 +216,9 @@ public class NavigationDrawerFragment extends Fragment {
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
+	/**
+	 * 当侧拉菜单中的选项被选择时。
+	 */
 	private void selectItem(int position) {
 		mCurrentSelectedPosition = position;
 		if (mDrawerListView != null) {
@@ -245,7 +229,41 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 		if (mCallbacks != null) {
 			Log.i ("Sample", position + " clicked");
-
+			
+			Fragment mFragment;
+			switch(position) {
+				case 0:	// 计步器
+					mFragment = new StepCountFragment();
+					break;
+				case 3:	// 户外模式
+					// break;
+				case 4: // 健康信息
+					mFragment = new HealthStatisticsFragment();
+					break;
+				case 6:	// 设置
+					// break;
+				default:
+					mFragment = new HealthStatisticsFragment();
+			}
+			FragmentManager mFragmentManager = getFragmentManager();
+			mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
+			/*
+			Intent act_intent;
+			switch(position) {
+				case 0:
+					act_intent = new Intent(getActivity(), StepCountActivity.class);
+					break;
+				case 3:
+					act_intent = new Intent(getActivity(), OutdoorActivity.class);
+					break;
+				case 6:
+					act_intent = new Intent(getActivity(), SettingActivity.class);
+					break;
+				default:
+					act_intent = new Intent(getActivity(), SettingActivity.class);
+			}
+			getActivity().startActivity(act_intent);*/
+			
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 	}
