@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 @SuppressLint("NewApi")
 public class Step_Fragment extends Fragment {
@@ -21,7 +22,7 @@ public class Step_Fragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+        // TextView outdoorRadius = (TextView)roodView.findViewById(R.id.outdoor_radius);
         return rootView;
     }
 }

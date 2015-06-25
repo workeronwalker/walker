@@ -236,7 +236,8 @@ public class NavigationDrawerFragment extends Fragment {
 					mFragment = new StepCountFragment();
 					break;
 				case 3:	// 户外模式
-					// break;
+					mFragment = new OutdoorFragment();
+					break;
 				case 4: // 健康信息
 					mFragment = new HealthStatisticsFragment();
 					break;

@@ -43,13 +43,16 @@ public class MainActivity extends ActionBarActivity implements
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		// 初始化百度地图sdkcontext信息，传入ApplicationContext
+		//SDKInitializer.initialize(getApplicationContext());
 		
+		startService(new Intent(getApplicationContext(), OutdoorService.class));
+		startService(new Intent(getApplicationContext(), StepServices.class));
+        
+        // Set up the drawer
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-		
-
-		// Set up the drawer. 显示左上角那个三条横杠的按钮
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
