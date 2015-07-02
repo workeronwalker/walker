@@ -30,6 +30,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		
@@ -43,6 +44,12 @@ public class MainActivity extends ActionBarActivity implements
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
+<<<<<<< HEAD
+=======
+		mTitle = getTitle();
+
+		// Set up the drawer. 显示左上角那个三条横杠的按钮
+>>>>>>> cai
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
@@ -56,9 +63,14 @@ public class MainActivity extends ActionBarActivity implements
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager
 				.beginTransaction()
+<<<<<<< HEAD
 				.replace(R.id.frame_container,
 						PlaceholderFragment.newInstance(position + 1)).commit();*/
 		
+=======
+				.replace(R.id.container,
+						PlaceholderFragment.newInstance(position + 1)).commit();
+>>>>>>> cai
 		//Intent actIntent = new Intent(MainActivity.this, OutdoorActivity.class);
 		//startActivity(actIntent);
 	}

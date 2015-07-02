@@ -1,7 +1,11 @@
 <!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+<<<<<<< HEAD
     android:id="@+id/setting_layout"
+=======
+    android:id="@+id/drawer_layout"
+>>>>>>> cai
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.walker.SettingActivity" >
@@ -12,7 +16,11 @@
     -->
 
     <FrameLayout
+<<<<<<< HEAD
         android:id="@+id/container_setting"
+=======
+        android:id="@+id/container"
+>>>>>>> cai
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     
