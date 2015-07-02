@@ -239,15 +239,6 @@ public class NavigationDrawerFragment extends Fragment {
 					mFragment = new HealthStatisticsFragment();
 					break;
 				case 6:	// 设置
-<<<<<<< HEAD
-<<<<<<< HEAD
-					// mFragment = new SettingFragment();
-				    // break;
-=======
-					mFragment = new SettingFragment();
-				    break;
->>>>>>> origin/master
-=======
 					mFragment = new SettingFragment();
 				    break;
 >>>>>>> origin/master
