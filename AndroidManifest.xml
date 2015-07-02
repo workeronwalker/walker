@@ -56,13 +56,19 @@
         <service
 =======
 <<<<<<< HEAD
+<<<<<<< HEAD
     
         <service
 =======
+=======
+>>>>>>> origin/master
         
 <<<<<<< HEAD
         <service 
 >>>>>>> origin/master
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
             android:enabled="true" 
             android:name="StepServices">

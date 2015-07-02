@@ -114,5 +114,8 @@ public class StepServices extends Service {
 =======
 >>>>>>> cai
 >>>>>>> origin/master
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 }

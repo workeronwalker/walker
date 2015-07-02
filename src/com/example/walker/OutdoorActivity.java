@@ -3,8 +3,11 @@ package com.example.walker;
 import java.util.ArrayList;
 import java.util.List;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 
 import android.hardware.Sensor;
@@ -20,6 +23,10 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> origin/master
 =======
 =======
 >>>>>>> origin/master
@@ -41,9 +48,13 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> origin/master
+=======
 =======
 >>>>>>> origin/master
 import com.baidu.mapapi.map.DotOptions;
@@ -56,6 +67,9 @@ import com.baidu.mapapi.map.BitmapDescriptor;
 =======
 >>>>>>> cai
 >>>>>>> origin/master
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -71,7 +85,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.baidu.mapapi.model.LatLng;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 <<<<<<< HEAD
 =======
 import android.support.v4.widget.DrawerLayout;
@@ -135,12 +152,18 @@ public class OutdoorActivity extends ActionBarActivity implements
 
 =======
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> origin/master
 =======
 
 >>>>>>> cai
 >>>>>>> origin/master
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 	// private CurrentMaker mCurrentMarker
 
@@ -158,15 +181,21 @@ public class OutdoorActivity extends ActionBarActivity implements
 <<<<<<< HEAD
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 =======
+>>>>>>> origin/master
+=======
 =======
 >>>>>>> cai
 >>>>>>> origin/master
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 		// 初始化地图
 		//mMapView = (MapView) findViewById(R.id.bmapView);

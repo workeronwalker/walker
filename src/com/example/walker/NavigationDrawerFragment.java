@@ -240,8 +240,13 @@ public class NavigationDrawerFragment extends Fragment {
 					break;
 				case 6:	// 设置
 <<<<<<< HEAD
+<<<<<<< HEAD
 					// mFragment = new SettingFragment();
 				    // break;
+=======
+					mFragment = new SettingFragment();
+				    break;
+>>>>>>> origin/master
 =======
 					mFragment = new SettingFragment();
 				    break;
@@ -252,7 +257,10 @@ public class NavigationDrawerFragment extends Fragment {
 			FragmentManager mFragmentManager = getFragmentManager();
 			mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/master
 			
 =======
 >>>>>>> origin/master
