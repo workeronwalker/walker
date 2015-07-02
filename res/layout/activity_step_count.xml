@@ -12,20 +12,6 @@
          space available using match_parent in both dimensions.
     -->
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    
-=======
-    <FrameLayout
->>>>>>> origin/master
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-    
-=======
->>>>>>> origin/master
     <FrameLayout
         android:id="@+id/container_step_count"
         android:layout_width="match_parent"
@@ -44,11 +30,6 @@
         android:textSize="@dimen/abc_text_size_display_4_material" />
 
     </FrameLayout>
->>>>>>> origin/master
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
 
     <!-- 计步器布局 -->
     
