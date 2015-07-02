@@ -1,13 +1,12 @@
 package com.example.walker;
 
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -16,10 +15,15 @@ public class StepCountActivity extends ActionBarActivity implements
 	NavigationDrawerFragment.NavigationDrawerCallbacks{
 	// 设置侧拉需要的变量
 	private NavigationDrawerFragment mNavigationDrawerFragment;
-	private CharSequence mTitle;
-	private TextView steps;
+	private TextView steps, debug;
 	
 	private int total_step = 0;
+	
+	private double bigger = 0;
+	private double smaller =0;
+	private double big = 0;
+	private double small = 0;
+	
 	private Thread thread;
 	
 	@SuppressLint("HandlerLeak")
@@ -27,7 +31,16 @@ public class StepCountActivity extends ActionBarActivity implements
 	        public void handleMessage(Message msg) {
 	            super.handleMessage(msg);
 	            total_step = StepDetector.CURRENT_STEP;
+	            
+	            bigger = StepDetector.lastBigger;
+	            smaller = StepDetector.lastSmaller;
+	            
+	            big = StepDetector.zBigger;
+	            small = StepDetector.zSmaller;
+	            
 	            steps.setText(total_step + " "); 
+	            debug.setText("b:" + bigger +"  s:" + smaller + "\n"
+	            		+ "b:" + big + "  s:" + small);
 	        }
 	 
 	    };
@@ -39,7 +52,7 @@ public class StepCountActivity extends ActionBarActivity implements
 	                public void run() {
 	                    while (true) {
 	                        try {
-	                            Thread.sleep(500);
+	                            Thread.sleep(200);
 	                        } catch (InterruptedException e) {
 	                            e.printStackTrace();
 	                        }
@@ -60,14 +73,10 @@ public class StepCountActivity extends ActionBarActivity implements
 		setContentView(R.layout.activity_step_count);
         init();
         steps = (TextView)findViewById(R.id.numOfSteps);
-        /**
-		 * 下面三行用来显示左上角的三条杠，家勋你自己的代码可以加在这上面。
-		 * 注意加注释，计步器的代码将来可能要放到mainActivity里面。
-		 */
-		
+        debug = (TextView)findViewById(R.id.textView1);
+
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-		mTitle = getTitle();
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));

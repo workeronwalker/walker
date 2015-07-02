@@ -2,10 +2,19 @@ package com.example.walker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -17,8 +26,6 @@ import com.baidu.mapapi.map.ArcOptions;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.DotOptions;
-import com.baidu.mapapi.map.DotOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -30,24 +37,6 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
-
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.TextView;
 
 public class OutdoorActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -86,6 +75,7 @@ public class OutdoorActivity extends ActionBarActivity implements
 	double lo = 99999;
 	double runTime;
 	double runSpeed;
+
 	// private CurrentMaker mCurrentMarker
 
 	@Override
@@ -99,6 +89,8 @@ public class OutdoorActivity extends ActionBarActivity implements
 		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 		outdoorLo = (TextView)findViewById(R.id.outdoor_lo);
 		outdoorHi = (TextView)findViewById(R.id.outdoor_hi);
+		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
+		outdoorRadius = (TextView)findViewById(R.id.outdoor_radius);
 		// 初始化地图
 		//mMapView = (MapView) findViewById(R.id.bmapView);
 		BaiduMapOptions mapOptions = new BaiduMapOptions();
