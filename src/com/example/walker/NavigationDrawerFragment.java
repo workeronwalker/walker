@@ -7,10 +7,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,8 +103,27 @@ public class NavigationDrawerFragment extends Fragment {
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
+							int position, long id) {	// 点击事件添加点
 						selectItem(position);
+						Intent act_intent;
+						switch(position) {
+							case 0:
+								act_intent = new Intent(getActivity(), StepCountActivity.class);
+								break;
+							case 3:
+								act_intent = new Intent(getActivity(), OutdoorActivity.class);
+								break;
+							case 6:
+								act_intent = new Intent(getActivity(), SettingActivity.class);
+								break;
+							default:
+								act_intent = new Intent(getActivity(), SettingActivity.class);
+						}
+						//Intent act_intent = new Intent(getActivity(), OutdoorActivity.class);
+						
+						//startActivity(actntent);
+						getActivity().startActivity(act_intent);
+						
 					}
 				});
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
@@ -218,10 +239,12 @@ public class NavigationDrawerFragment extends Fragment {
 		if (mDrawerListView != null) {
 			mDrawerListView.setItemChecked(position, true);
 		}
-		if (mDrawerLayout != null) {
+		if (mDrawerLayout != null) {	
 			mDrawerLayout.closeDrawer(mFragmentContainerView);
 		}
 		if (mCallbacks != null) {
+			Log.i ("Sample", position + " clicked");
+
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 	}
