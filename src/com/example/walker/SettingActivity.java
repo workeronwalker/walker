@@ -29,7 +29,11 @@ public class SettingActivity extends ActionBarActivity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
+<<<<<<< HEAD
 	/*
+=======
+
+>>>>>>> cai
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -47,8 +51,13 @@ public class SettingActivity extends ActionBarActivity implements
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+<<<<<<< HEAD
 	}*/
 	
+=======
+	}
+
+>>>>>>> cai
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// TODO Auto-generated method stub

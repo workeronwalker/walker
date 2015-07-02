@@ -105,7 +105,30 @@ public class NavigationDrawerFragment extends Fragment {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {	// 点击事件添加点
+<<<<<<< HEAD
 						selectItem(position);						
+=======
+						selectItem(position);
+						Intent act_intent;
+						switch(position) {
+							case 0:
+								act_intent = new Intent(getActivity(), StepCountActivity.class);
+								break;
+							case 3:
+								act_intent = new Intent(getActivity(), OutdoorActivity.class);
+								break;
+							case 6:
+								act_intent = new Intent(getActivity(), SettingActivity.class);
+								break;
+							default:
+								act_intent = new Intent(getActivity(), SettingActivity.class);
+						}
+						//Intent act_intent = new Intent(getActivity(), OutdoorActivity.class);
+						
+						//startActivity(actntent);
+						getActivity().startActivity(act_intent);
+						
+>>>>>>> cai
 					}
 				});
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
@@ -229,6 +252,7 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 		if (mCallbacks != null) {
 			Log.i ("Sample", position + " clicked");
+<<<<<<< HEAD
 			
 			Fragment mFragment;
 			switch(position) {
@@ -265,6 +289,9 @@ public class NavigationDrawerFragment extends Fragment {
 			}
 			getActivity().startActivity(act_intent);*/
 			
+=======
+
+>>>>>>> cai
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 	}

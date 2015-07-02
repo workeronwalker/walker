@@ -46,6 +46,7 @@
             android:label="@string/title_section7" >
         </activity>
         
+<<<<<<< HEAD
         <service 
             android:enabled="true" 
             android:name="StepServices">
@@ -53,6 +54,12 @@
 		<service 
 		    android:enabled="true"
 		    android:name="OutdoorService">
+=======
+        <service android:enabled="true" android:name="StepServices">
+			<intent-filter>
+				<action android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+>>>>>>> cai
 		</service>
         
     </application>
