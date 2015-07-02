@@ -1,25 +1,15 @@
 package com.example.walker;
 
-import com.baidu.mapapi.SDKInitializer;
-
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -47,19 +37,17 @@ public class MainActivity extends ActionBarActivity implements
 		// 初始化百度地图sdkcontext信息，传入ApplicationContext
 		//SDKInitializer.initialize(getApplicationContext());
 		
-		startService(new Intent(getApplicationContext(), OutdoorService.class));
+		// * startService(new Intent(getApplicationContext(), OutdoorService.class));
 		startService(new Intent(getApplicationContext(), StepServices.class));
         
         // Set up the drawer
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-<<<<<<< HEAD
-=======
+
 		mTitle = getTitle();
 
 		// Set up the drawer. 显示左上角那个三条横杠的按钮
->>>>>>> cai
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
@@ -77,10 +65,6 @@ public class MainActivity extends ActionBarActivity implements
 				.replace(R.id.frame_container,
 						PlaceholderFragment.newInstance(position + 1)).commit();*/
 		
-=======
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
->>>>>>> cai
 		//Intent actIntent = new Intent(MainActivity.this, OutdoorActivity.class);
 		//startActivity(actIntent);
 	}

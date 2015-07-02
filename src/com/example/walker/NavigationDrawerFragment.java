@@ -1,22 +1,19 @@
 package com.example.walker;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,30 +102,7 @@ public class NavigationDrawerFragment extends Fragment {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {	// 点击事件添加点
-<<<<<<< HEAD
 						selectItem(position);						
-=======
-						selectItem(position);
-						Intent act_intent;
-						switch(position) {
-							case 0:
-								act_intent = new Intent(getActivity(), StepCountActivity.class);
-								break;
-							case 3:
-								act_intent = new Intent(getActivity(), OutdoorActivity.class);
-								break;
-							case 6:
-								act_intent = new Intent(getActivity(), SettingActivity.class);
-								break;
-							default:
-								act_intent = new Intent(getActivity(), SettingActivity.class);
-						}
-						//Intent act_intent = new Intent(getActivity(), OutdoorActivity.class);
-						
-						//startActivity(actntent);
-						getActivity().startActivity(act_intent);
-						
->>>>>>> cai
 					}
 				});
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
@@ -252,7 +226,6 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 		if (mCallbacks != null) {
 			Log.i ("Sample", position + " clicked");
-<<<<<<< HEAD
 			
 			Fragment mFragment;
 			switch(position) {
@@ -266,32 +239,24 @@ public class NavigationDrawerFragment extends Fragment {
 					mFragment = new HealthStatisticsFragment();
 					break;
 				case 6:	// 设置
-					// break;
+<<<<<<< HEAD
+					// mFragment = new SettingFragment();
+				    // break;
+=======
+					mFragment = new SettingFragment();
+				    break;
+>>>>>>> origin/master
 				default:
 					mFragment = new HealthStatisticsFragment();
 			}
 			FragmentManager mFragmentManager = getFragmentManager();
 			mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
-			/*
-			Intent act_intent;
-			switch(position) {
-				case 0:
-					act_intent = new Intent(getActivity(), StepCountActivity.class);
-					break;
-				case 3:
-					act_intent = new Intent(getActivity(), OutdoorActivity.class);
-					break;
-				case 6:
-					act_intent = new Intent(getActivity(), SettingActivity.class);
-					break;
-				default:
-					act_intent = new Intent(getActivity(), SettingActivity.class);
-			}
-			getActivity().startActivity(act_intent);*/
+<<<<<<< HEAD
+=======
 			
 =======
+>>>>>>> origin/master
 
->>>>>>> cai
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 	}

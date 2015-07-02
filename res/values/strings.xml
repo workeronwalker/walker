@@ -18,6 +18,13 @@
     <string name="hello_jiaxun">计数器的布局</string>
     <string name="title_activity_outdoor">OutdoorActivity</string>
     <string name="title_activity_step_count">StepCountActivity</string>
-    <string name="my_string">YoureSB</string>
+    <string name="setting_name">姓\t\t\t\t名\t\t\t\t\t</string>
+    <string name="setting_date">生\t\t\t\t日\t\t\t\t\t</string>
+    <string name="setting_height">身\t\t\t\t高\t\t\t\t\t</string>
+    <string name="setting_weight">体\t\t\t\t重\t\t\t\t\t</string>
+    <string name="setting_goal">目标步数\t\t\t</string>
+    <string name="setting_change">修改设置</string>
+    <string name="setting_save">保\t存\t✔</string>
+    <string name="setting_cancel">取\t消\t✗</string>
 
 </resources>
