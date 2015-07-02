@@ -241,21 +241,11 @@ public class NavigationDrawerFragment extends Fragment {
 				case 6:	// 设置
 					mFragment = new SettingFragment();
 				    break;
->>>>>>> origin/master
 				default:
 					mFragment = new HealthStatisticsFragment();
 			}
 			FragmentManager mFragmentManager = getFragmentManager();
 			mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> origin/master
-			
-=======
->>>>>>> origin/master
-
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 	}
