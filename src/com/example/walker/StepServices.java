@@ -20,10 +20,6 @@ public class StepServices extends Service {
 	}
 
 	public void onCreate() {
-
-		super.onCreate();
-		Log.i("stepServices", "onCreate");
-
 		super.onCreate();
 		Log.i("stepServices", "onCreate");
 		// 这里开启了一个线程，因为后台服务也是在主线程中进行，这样可以安全点，防止主线程阻塞
