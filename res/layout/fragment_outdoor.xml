@@ -1,5 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/frame_outdoor"
+        android:id="@+id/frameLayout_outdoor"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
@@ -22,4 +22,11 @@
         android:layout_height="wrap_content"
         android:paddingTop="32dp"
         android:text="hello andrew" />
+    
+    <!-- com.baidu.mapapi.map.MapView 
+        android:id="@+id/bmapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true" /-->
+    
 </FrameLayout>

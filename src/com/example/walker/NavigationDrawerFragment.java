@@ -1,6 +1,13 @@
 package com.example.walker;
 
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapView;
+
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,6 +39,7 @@ import android.widget.Toast;
  */
 public class NavigationDrawerFragment extends Fragment {
 
+	public Fragment mOutdoorFragment;
 	/**
 	 * Remember the position of the selected item.
 	 */
@@ -124,6 +133,7 @@ public class NavigationDrawerFragment extends Fragment {
 				&& mDrawerLayout.isDrawerOpen(mFragmentContainerView);
 	}
 
+	Context mainContext;
 	/**
 	 * Users of this fragment must call this method to set up the navigation
 	 * drawer interactions.
@@ -134,6 +144,9 @@ public class NavigationDrawerFragment extends Fragment {
 	 *            The DrawerLayout containing this fragment's UI.
 	 */
 	public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+		//mOutdoorFragment = mBDMapFragment;
+		//mainContext = context;
+		
 		mFragmentContainerView = getActivity().findViewById(fragmentId);
 		mDrawerLayout = drawerLayout;
 
@@ -211,6 +224,8 @@ public class NavigationDrawerFragment extends Fragment {
 		});
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
+		
 	}
 
 	/**
@@ -226,14 +241,25 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 		if (mCallbacks != null) {
 			Log.i ("Sample", position + " clicked");
-			
+			boolean isOutdoor = false;
+			Intent act_intent;
 			Fragment mFragment;
+			FragmentManager mFragmentManager = getFragmentManager();
 			switch(position) {
 				case 0:	// 计步器
 					mFragment = new StepCountFragment();
 					break;
 				case 3:	// 户外模式
+					// mFragment = mOutdoorFragment;
 					mFragment = new OutdoorFragment();
+					isOutdoor = true;
+					//mFragmentManager.beginTransaction().show(mOutdoorFragment).commit();
+					//mFragment = new OutdoorFragment();
+					/*
+					act_intent = new Intent(getActivity(), OutdoorActivity.class);
+					getActivity().startActivity(act_intent);
+					isOutdoor = true;
+					*/
 					break;
 				case 4: // 健康信息
 					mFragment = new HealthStatisticsFragment();
@@ -244,10 +270,38 @@ public class NavigationDrawerFragment extends Fragment {
 				default:
 					mFragment = new HealthStatisticsFragment();
 			}
-			FragmentManager mFragmentManager = getFragmentManager();
-			mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
+			if (true) {
+				mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
+			}
+			/*
+			if (isOutdoor) {
+				Outdoor mOutdoor = new Outdoor(mainContext);
+				mOutdoor.setUpBDmap(mainContext, getBDmapView(mainContext), mOutdoorFragment.getView());
+				mOutdoor.setUpSensor(mainContext);
+			}*/
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
+	}
+	public MapView getBDmapView(Context context) {
+		// setContentView(R.layout.fragment_outdoor);
+		Log.i("Outdoor", "why dont you show this line?");
+		// FrameLayout container = (FrameLayout) findViewById(R.id.frame_outdoor);
+
+		// 初始化地图
+		BaiduMapOptions mapOptions = new BaiduMapOptions();
+		mapOptions.scaleControlEnabled(false); // 隐藏比例尺控件
+		mapOptions.zoomControlsEnabled(false); // 隐藏缩放按钮
+		mapOptions.mapStatus(new MapStatus.Builder().zoom(18).build());
+		MapView mMapView = new MapView(context, mapOptions);
+		mMapView.setLayoutParams(new ViewGroup.LayoutParams(
+				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		mMapView.setClickable(true);
+		
+		// container.addView(mMapView);
+		
+		
+		// setContentView(R.layout.activity_main);
+		return mMapView;
 	}
 
 	@Override
