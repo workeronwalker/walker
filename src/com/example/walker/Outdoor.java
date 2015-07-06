@@ -2,6 +2,7 @@ package com.example.walker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import android.app.Service;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +43,7 @@ import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 
-public class Outdoor {
+public class Outdoor extends Observable{
 
 	// 百度地图相关
 	private LocationClient mLocationClient = null;
@@ -52,62 +54,41 @@ public class Outdoor {
 	private MapView mMapView = null;
 	private BaiduMap mBaiduMap = null;
 
-	private MyLocationData locData;
+	
 	private float locDirection = 0;
 
 	// BDm Location
 	private com.baidu.location.LocationClientOption.LocationMode tempMode = com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy;
 
-	private boolean isFirstLoc = true;
-	private List<LatLng> points = new ArrayList<LatLng>();
-	private int pointCounts = 0;
-	private TextView outdoorRadius, outdoorHi, outdoorLo;
-	double hi = 0;
-	double lo = 99999;
-	double runTime;
-	double runSpeed;
+	public static boolean isFirstLoc = true;
+	public static List<LocPoint> points = new ArrayList<LocPoint>();
+	public static int pointCounts = 0;
+	
+	private TextView outdoorRadius;
+	private static TextView outdoorHi;
+	private static TextView outdoorLo;
+	static double hi = 0;
+	static double lo = 99999;
+	public static double runTime;
+	public static double runSpeed;
+	public static float direction;
+	public static MyLocationData locData;
+	
+	public static MapStatusUpdate cMapStatus;
+	
+	Context mContext = null;
 	FrameLayout container;
 	
 	boolean showTime;
 
-	public Outdoor(final Context context) {
+	public Outdoor() {
 		Log.i("Outdoor", "Setting up outdoor.class");
-
+		
 		//setUpBDmap(context);
 		//setUpSensor(context);
 	}
 
-	public void setUpBDmap(final Context context, MapView mMapView, View fragmentView) {
-		// 获取父view
-		Log.i("Outdoor", "why dont you show this line?");
-		/*
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.fragment_outdoor, null);
-		*/
-		Log.i("tinker", ""+fragmentView.getId());
-		FrameLayout mFramLayout = (FrameLayout) fragmentView.findViewById(R.id.frameLayout_outdoor);
-		outdoorRadius = (TextView) fragmentView.findViewById(R.id._outdoor_radius);
-		outdoorLo = (TextView) fragmentView.findViewById(R.id._outdoor_lo);
-		outdoorHi = (TextView) fragmentView.findViewById(R.id._outdoor_hi);
-		outdoorHi.setText("You are half way there");
-		// mMapView = (MapView) layout.findViewById(R.id.bmapView);
-		Log.i("tinkerOutdoor", "You should notice this very long scentence " + mFramLayout.getId());
-		mFramLayout.addView(mMapView);
-		
-		mBaiduMap = mMapView.getMap();
-		// 设置定位模式为普通
-		mCurrentMode = LocationMode.FOLLOWING;
-		// 设置指针类型为默认箭头
-		mCurrentMarker = null;
-		// 应用定位模式与指针类型的设置
-		mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
-				mCurrentMode, true, mCurrentMarker));
-
-		// 开启定位图层
-		mBaiduMap.setMyLocationEnabled(true);
-		// 定位初始化
-		// mLocationClient = new LocationClient(getApplicationContext()); //
+	public void setUpBDmapClient(final Context context) {
 		// 声明LocationClient类
 		mLocationClient = new LocationClient(context);
 		mLocationClient.registerLocationListener(myListener); // 注册监听函数
@@ -124,49 +105,32 @@ public class Outdoor {
 	}
 
 	public void setUpSensor(final Context context) {
-		// 传感器管理器，百度地图中没有实现手机方向感测，需要通过手机内置陀螺仪感应。
 		SensorManager sm = (SensorManager) context
 				.getSystemService(context.SENSOR_SERVICE);
-		// 注册传感器(Sensor.TYPE_ORIENTATION(方向传感器);SENSOR_DELAY_FASTEST(0毫秒延迟);
-		// SENSOR_DELAY_GAME(20,000毫秒延迟)、SENSOR_DELAY_UI(60,000毫秒延迟))
 		sm.registerListener(
 				new SensorEventListener() {
 					// 用于传感器监听中，设置灵敏程度
 					int mIncrement = 1;
-
 					@Override
 					public void onSensorChanged(SensorEvent event) {
 						// 方向传感器
 						if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
 							// x表示手机指向的方位，0表示北,90表示东，180表示南，270表示西
 							float x = event.values[SensorManager.DATA_X];
-							// Log.e("x",x+"");
 							mIncrement++;
 							if (mIncrement >= 7) {
 								locDirection = x;
 								if (!isFirstLoc) {
 									// 修改定位图标方向
-									// locData.
 									locData = new MyLocationData.Builder()
-											.accuracy(locData.accuracy)
-											.direction(x)
-											.latitude(locData.latitude)
-											.longitude(locData.longitude)
-											.build();
-									// locData.direction = x;
-									// 重新设置当前位置数据
-									mBaiduMap.setMyLocationData(locData);
-									/*
-									 * LatLng ll = new LatLng(locData.latitude,
-									 * locData.longitude); MapStatusUpdate u =
-									 * MapStatusUpdateFactory.newLatLng(ll);
-									 * mBaiduMap.animateMapStatus(u);
-									 */
+										.accuracy(locData.accuracy)
+										.direction(x)
+										.latitude(locData.latitude)
+										.longitude(locData.longitude)
+										.build();
+									NotifyUI("direction");
 								}
-								// myLocationOverlay.setData(locData);
-								// mMapView.refresh();
 								mIncrement = 1;
-								// Log.i("direction", "" + locDirection);
 							}
 						}
 					}
@@ -180,6 +144,11 @@ public class Outdoor {
 				}, sm.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);
 	}
+	
+	private void NotifyUI(String cmd) {
+		super.setChanged();
+		super.notifyObservers(cmd);
+	}
 
 	private class MyLocationListener implements BDLocationListener {
 		@Override
@@ -187,87 +156,42 @@ public class Outdoor {
 			runTime++; // 每次收到请求，说明时间度过了一秒
 			if (location == null)
 				return;
-			/*
-			StringBuffer sb = new StringBuffer(256);
-			sb.append("time : ");
-			sb.append(location.getTime());
-			sb.append("\nerror code : ");
-			sb.append(location.getLocType());
-			sb.append("\nlatitude : ");
-			sb.append(location.getLatitude());
-			sb.append("\nlontitude : ");
-			sb.append(location.getLongitude());
-			sb.append("\nradius : ");
-			sb.append(location.getRadius());
-			sb.append("\ndirection : ");
-			sb.append(location.getDirection());
-			if (location.getLocType() == BDLocation.TypeGpsLocation) {
-				sb.append("\nspeed : ");
-				sb.append(location.getSpeed());
-				sb.append("\nsatellite : ");
-				sb.append(location.getSatelliteNumber());
-			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
-				sb.append("\naddr : ");
-				sb.append(location.getAddrStr());
-			}
-			Log.i("BDmap", sb.toString());
-			*/
-			locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius()).direction(locDirection)
-					.latitude(location.getLatitude())
-					.longitude(location.getLongitude()).build();
-			mBaiduMap.setMyLocationData(locData); 
-			Log.i("BDmap", "hi");
-			/*
-			Log.i("Outdoor", ""+container.getChildCount()+ " 111");
-			Log.i("Outdoor", ""+container.getChildAt(0)+ " 111");
-			Log.i("Outdoor", ""+container.getChildAt(0).getVisibility()+ " 111");*/
-			//container.setVisibility(1);
-			// Log.i("Outdoor", ""+container.getChildAt(0).getZ() + " 111");
+			// Log.i("Outdoor", "data sent");
 			
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				LatLng ll = new LatLng(location.getLatitude(),
 						location.getLongitude());
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-				mBaiduMap.animateMapStatus(u);
+				cMapStatus = MapStatusUpdateFactory.newLatLng(ll);
 			}
-			outdoorRadius.setText("" + location.getRadius());
+			locData = new MyLocationData.Builder()
+				.accuracy(location.getRadius()).direction(locDirection)
+				.latitude(location.getLatitude())
+				.longitude(location.getLongitude()).build();
 
-			if (!isFirstLoc /* && pointCounts >= 7 */
-					&& location.getRadius() <= 10) {
+			if (!isFirstLoc && location.getRadius() <= 10) {
 				// 精度超过9才加入点阵。
-				pointCounts++;
-				points.add(new LatLng(location.getLatitude(), location
-						.getLongitude()));
-				if (points.size() >= 3 && pointCounts >= 1) {
-					// 加入点阵的数量超过2，才开始绘制新曲线。
-					pointCounts = 0;
-
-					OverlayOptions ooArc = new ArcOptions()
-							.color(getSpeedColor(runTime,
-									points.get(points.size() - 1),
-									points.get(points.size() - 2)))
-							.width(12)
-							.points(points.get(points.size() - 1),
-									points.get(points.size() - 2),
-									points.get(points.size() - 3));
-
-					/*
-					 * OverlayOptions ooArc = new DotOptions().
-					 * center(points.get(points.size()-1));
-					 */
-					OverlayOptions ooPoly = new PolylineOptions()
-							.color(getSpeedColor(runTime,
-									points.get(points.size() - 1),
-									points.get(points.size() - 2)))
-							.width(10)
-							.points(points.subList(points.size() - 2,
-									points.size()));
-					mBaiduMap.addOverlay(ooPoly);
-					runTime = 0; // 重新计时。
-					Log.i("BDmap", "there should be an Arc");
-				}
+				int cColor;
+				if (points.size() <= 1)
+					cColor = 0;
+				else
+					cColor = getSpeedColor(runTime, 
+						new LatLng(points.get(points.size() -2).latitute, 
+								   points.get(points.size() -2).longitude),
+						new LatLng(location.getLatitude(), location.getLongitude()));
+				
+				LocPoint locPoi = new LocPoint(location.getLatitude(), location
+						.getLongitude(), runTime, cColor);
+				
+				Log.i("Outdoor", "Loc.color" + locPoi.color + " Loc.time" + locPoi.time 
+						+ " radius" + location.getRadius());
+				
+				points.add(locPoi);
+				
+				if (points.size() >= 2)
+					NotifyUI("location");
+				
+				runTime = 0; // 重新计时。
 			}
 		}
 
@@ -276,7 +200,7 @@ public class Outdoor {
 		}
 	}
 
-	private int getSpeedColor(double time, LatLng point1, LatLng point2) { // 1
+	public static int getSpeedColor(double time, LatLng point1, LatLng point2) { // 1
 																			// -
 																			// 4
 																			// -
@@ -286,11 +210,11 @@ public class Outdoor {
 		runSpeed = speed;
 		if (speed > hi) {
 			hi = speed;
-			outdoorHi.setText("" + hi);
+			// outdoorHi.setText("" + hi);
 		}
 		if (speed < lo) {
 			lo = speed;
-			outdoorLo.setText("" + lo);
+			// outdoorLo.setText("" + lo);
 		}
 		if (speed <= 1) // [0, 1]
 			return 0xAAFF0000;
@@ -304,5 +228,18 @@ public class Outdoor {
 			return ret - ret % 65536 - 256;
 		}
 		return 0xAAFFFF00;
+	}
+	
+	public class LocPoint {
+		public double latitute;
+		public double longitude;
+		public double time;
+		public int color;
+		LocPoint(double lat, double lon, double t, int clr) {
+			this.latitute = lat;
+			this.longitude = lon;
+			this.time = t;
+			this.color = clr;
+		}
 	}
 }

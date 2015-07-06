@@ -1,11 +1,14 @@
 package com.example.walker;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.model.LatLng;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -45,6 +48,11 @@ public class MainActivity extends ActionBarActivity implements
 	private CharSequence mTitle;
 	
 	public OutdoorFragment mOutdoorFragment;
+	
+	public static Outdoor outdoorDataSet;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,24 +60,11 @@ public class MainActivity extends ActionBarActivity implements
 		
 		
 		SDKInitializer.initialize(getApplicationContext());
-		/*
-		Log.i("Outdoor", "Setting up outdoor.class1");
-		mOutdoorFragment = new OutdoorFragment();
+
+		outdoorDataSet = new Outdoor();
+		outdoorDataSet.setUpBDmapClient(this);
+		outdoorDataSet.setUpSensor(this);
 		
-		FragmentManager mFragmentManager = getSupportFragmentManager();
-		mFragmentManager.beginTransaction().replace(R.id.frame_container, mOutdoorFragment).commit();
-		*/
-		
-		//mOutdoorFragment.getView();
-		// Outdoor mOutdoor = new Outdoor(this);
-		/*
-		Log.i("tinker11", "You should notice this very long scentence "+ mOutdoorFragment.getView().getId());
-		Log.i("tinker11", "You should notice this very long scentence "+ mOutdoorFragment.getView().getId());
-		Log.i("tinker11", "You should notice this very long scentence "+ mOutdoorFragment.getView().getId());
-		Log.i("tinker11", "You should notice this very long scentence "+ mOutdoorFragment.getView().getId());*/
-		
-		// mOutdoor.setUpBDmap(this, getBDmapView(), mOutdoorFragment.getView());
-		// mOutdoor.setUpSensor(this);
 		
 
 		mTitle = getTitle();
@@ -84,42 +79,7 @@ public class MainActivity extends ActionBarActivity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
-	/*
-	@Override
-	protected void onStart() {
-		super.onStart();
 
-		
-		Log.i("tinker11", "You should notice this very long scentence " + mOutdoorFragment.getView().getId());
-		Log.i("tinker11", "You should notice this very long scentence " + mOutdoorFragment.getView());
-		Outdoor mOutdoor = new Outdoor(this);
-		mOutdoor.setUpBDmap(this, getBDmapView(), mOutdoorFragment.getView());
-		mOutdoor.setUpSensor(this);
-		
-		
-	}*/
-	/*
-	public MapView getBDmapView() {
-		// setContentView(R.layout.fragment_outdoor);
-		Log.i("Outdoor", "why dont you show this line?");
-		// FrameLayout container = (FrameLayout) findViewById(R.id.frame_outdoor);
-
-		// 初始化地图
-		BaiduMapOptions mapOptions = new BaiduMapOptions();
-		mapOptions.scaleControlEnabled(false); // 隐藏比例尺控件
-		mapOptions.zoomControlsEnabled(false); // 隐藏缩放按钮
-		mapOptions.mapStatus(new MapStatus.Builder().zoom(18).build());
-		MapView mMapView = new MapView(this, mapOptions);
-		mMapView.setLayoutParams(new ViewGroup.LayoutParams(
-				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-		mMapView.setClickable(true);
-		
-		// container.addView(mMapView);
-		
-		
-		// setContentView(R.layout.activity_main);
-		return mMapView;
-	}*/
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
