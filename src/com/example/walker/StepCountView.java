@@ -91,7 +91,8 @@ public class StepCountView extends View {
         
         //设置字体大小  
         paint.setTextSize(FONT_SIZE); 
-        paint.setTypeface(Typeface.SANS_SERIF );
+        Typeface font = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
+        paint.setTypeface(font);
         //让画出的图形是实心的  
         paint.setStyle(Paint.Style.FILL); 
         paint.setTextAlign(Paint.Align.CENTER);
