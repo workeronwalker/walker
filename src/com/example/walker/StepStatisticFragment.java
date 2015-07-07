@@ -80,7 +80,10 @@ public class StepStatisticFragment extends Fragment {
 		
 		SharedPreferences reader = getActivity().getSharedPreferences("userProfile", 0);
 		String goalString = reader.getString("goal", "0");
-		user_goal = Integer.parseInt(goalString);
+		if (!goalString.isEmpty())
+			user_goal = Integer.parseInt(goalString);
+		else
+			user_goal = 0;
 		loadWeeklyData();
         //mThread();
 	}

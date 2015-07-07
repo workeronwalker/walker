@@ -20,12 +20,15 @@ public class StatisticView extends View {
 	private static final String X_KEY = "Xpos";  
     private static final String Y_KEY = "Ypos";
     
-    private static float height, width, rangX, rangY;
-    private static final float MARGIN = 100;
-    private static final float ADJUST_MARGIN = 80;
-    private static final float GRAPHIC_MARGIN = 3;
-    private static final float FONT_SIZE = 40;
-    private static final float TITLE_SIZE = 50;
+    private static float width, rangX, rangY;
+    private static float MARGIN = 100;
+    private static float ADJUST_MARGIN = 80;
+    private static float FONT_SIZE = 40;
+    private static float TITLE_SIZE = 50;
+    private static float GRAPHIC_SIZE = 25;
+    private static float LINE_WIDTH = 3;
+    private static float GRAPHIC_MARGIN = 3;
+    
     private static final float DAYS_OF_WEEK = 7;
     
     private static final String TITLE_STR = "最近一周行走统计";
@@ -44,8 +47,16 @@ public class StatisticView extends View {
 		Display display = wm.getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
-		height = size.y;
 		width = size.x;
+		int height = size.y;
+		
+		GRAPHIC_MARGIN = height / 630;
+		GRAPHIC_SIZE = width / 30;
+		MARGIN = width / 12;
+		LINE_WIDTH = width / 360;
+		ADJUST_MARGIN = MARGIN * 8 / 10;
+		FONT_SIZE = MARGIN / 2;
+		TITLE_SIZE = MARGIN * 2 / 3;
 		rangX = width - MARGIN - MARGIN;
 		rangY = width - MARGIN;
 		
@@ -72,7 +83,7 @@ public class StatisticView extends View {
         
         mPaint.setTextAlign(Paint.Align.LEFT);
     	mPaint.setTextSize(TITLE_SIZE);
-    	canvas.drawText(TITLE_STR, MARGIN, MARGIN, mPaint);
+    	canvas.drawText(TITLE_STR, MARGIN, MARGIN - FONT_SIZE / 4, mPaint);
     	
         int index;
         mPaint.setTextAlign(Paint.Align.CENTER);
@@ -82,22 +93,16 @@ public class StatisticView extends View {
         	mPaint.setColor(Color.GRAY);
             canvas.drawText(mListPoint.get(index).get(Y_KEY) + "",
             		pointAdjust.get(index).get(X_KEY),
-            		pointAdjust.get(index).get(Y_KEY) - GRAPHIC_MARGIN - GRAPHIC_MARGIN,
+            		pointAdjust.get(index).get(Y_KEY) - 5 * GRAPHIC_MARGIN,
             		mPaint);
             String date = (mListPoint.get(index).get(X_KEY) % 10000) / 100 + "";
             date += "/" + mListPoint.get(index).get(X_KEY) % 100;
             canvas.drawText(date + "", pointAdjust.get(index).get(X_KEY),
             		rangY + MARGIN + ADJUST_MARGIN, mPaint);
-//            mPaint.setStrokeWidth(1);
-//            canvas.drawLine(pointAdjust.get(index).get(X_KEY),
-//            		pointAdjust.get(index).get(Y_KEY),  
-//            		MARGIN, pointAdjust.get(index).get(Y_KEY) - GRAPHIC_MARGIN, mPaint);
-            
+         
         	mPaint.setColor(myRed);
-        	mPaint.setStrokeWidth(25);
-//        	canvas.drawPoint(pointAdjust.get(index).get(X_KEY), 
-//        			pointAdjust.get(index).get(Y_KEY), mPaint);
-        	
+        	mPaint.setStrokeWidth(GRAPHIC_SIZE);
+       	
         	canvas.drawLine(pointAdjust.get(index).get(X_KEY),
             		pointAdjust.get(index).get(Y_KEY) - GRAPHIC_MARGIN,  
             		pointAdjust.get(index).get(X_KEY), 
@@ -105,7 +110,7 @@ public class StatisticView extends View {
 
             if (index > 0)  
             {  
-            	mPaint.setStrokeWidth(3);
+            	mPaint.setStrokeWidth(LINE_WIDTH);
                 canvas.drawLine(pointAdjust.get(index-1).get(X_KEY),
                 		pointAdjust.get(index-1).get(Y_KEY),  
                 		pointAdjust.get(index).get(X_KEY), 
@@ -116,7 +121,7 @@ public class StatisticView extends View {
             }  
             
         } 
-        mPaint.setStrokeWidth(3);
+        mPaint.setStrokeWidth(LINE_WIDTH);
         float goalYAdjust = pointAdjust.get(index).get(Y_KEY);
         mPaint.setColor(myBlue);
         canvas.drawLine(MARGIN, goalYAdjust, rangX + MARGIN, goalYAdjust, mPaint);

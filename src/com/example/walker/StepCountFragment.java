@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,9 +111,13 @@ public class StepCountFragment extends Fragment {
 		
 		SharedPreferences reader = getActivity().getSharedPreferences("userProfile", 0);
 		String goalString = reader.getString("goal", "0");
-		user_goal = Integer.parseInt(goalString);
+		if (!goalString.isEmpty())
+			user_goal = Integer.parseInt(goalString);
+		else
+			user_goal = 0;
         mThread();
         flashThread();
+
 	}
 
 }

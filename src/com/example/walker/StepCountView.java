@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,12 +17,14 @@ public class StepCountView extends View {
 	private static int myGreen, myAlphaGreen, myBlue, myGray; 
 
 	private static float centerX = 0, centerY = 0, radius = 0;
-	private static final float MARGIN = 100;
+	private static float MARGIN = 100;
+	private static float FONT_SIZE = 270;
+	private static float STROKE_WIDTH = 35;
+
 	private static final float CYCLE_ANGLE = 360;
 	private static final float START_ANGLE = -90;
-	private static final float FONT_SIZE = 270;
-	private static final String GOAL_STRING = "今日目标  ";
-	private static final String STEP_STRING = "  步";
+	private static final String GOAL_STRING = "目标 ";
+	private static final String STEP_STRING = "步数";
 	
 	private static final int FLASH_FREQ = 30;
 	private static float flashR[] = new float[FLASH_FREQ];
@@ -33,6 +36,13 @@ public class StepCountView extends View {
 		Display display = wm.getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
+		
+		float height = size.y;
+		float width = size.x;
+		MARGIN = width / 12;
+		FONT_SIZE = MARGIN * 5 / 2;
+		STROKE_WIDTH = width / 30;
+		
 		centerX = size.x / 2;
 		centerY = centerX;
 		radius = centerX - MARGIN;
@@ -56,12 +66,12 @@ public class StepCountView extends View {
         
         paint.setColor(myAlphaGreen);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(35); 
+        paint.setStrokeWidth(STROKE_WIDTH); 
         canvas.drawCircle(centerX, centerY, 
         		flashR[StepCountFragment.flashCount % FLASH_FREQ], paint);
         
         paint.setColor(myGray);      
-        paint.setStrokeWidth(35);  
+        paint.setStrokeWidth(STROKE_WIDTH);  
         canvas.drawCircle(centerX, centerY, radius, paint);
         
         RectF oval = new RectF(MARGIN, MARGIN, centerX + radius, centerY + radius);
@@ -81,6 +91,7 @@ public class StepCountView extends View {
         
         //设置字体大小  
         paint.setTextSize(FONT_SIZE); 
+        paint.setTypeface(Typeface.SANS_SERIF );
         //让画出的图形是实心的  
         paint.setStyle(Paint.Style.FILL); 
         paint.setTextAlign(Paint.Align.CENTER);
@@ -88,8 +99,11 @@ public class StepCountView extends View {
         
         paint.setColor(myBlue);
         paint.setTextSize(FONT_SIZE / 3);
-        canvas.drawText(GOAL_STRING + StepCountFragment.user_goal + STEP_STRING, centerX, 
-        		centerY + centerY + MARGIN + MARGIN, paint);
+        
+        canvas.drawText(GOAL_STRING + StepCountFragment.user_goal, centerX, 
+        		centerY + radius /2 , paint);
+        canvas.drawText(STEP_STRING, centerX, 
+        		centerY - radius / 2, paint);
         
         super.onDraw(canvas);  
     }  

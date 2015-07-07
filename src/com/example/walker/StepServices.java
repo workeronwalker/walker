@@ -22,6 +22,7 @@ public class StepServices extends Service {
 	private SensorManager sensorManager;
 	private StepDetector stepDetector;
 
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
@@ -61,13 +62,14 @@ public class StepServices extends Service {
 		        }
 		    }
 		}).start();
+
 	 }
 	
 	 private void startStepDetector() {
 	        flag = true;
 	        stepDetector = new StepDetector(this);
 	        sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);//获取传感器管理器的实例
-	        
+
 	        SharedPreferences reader = getApplicationContext().getSharedPreferences("tempfile", 0);
 	        StepDetector.CURRENT_STEP = reader.getInt("tempData", 0);
             
@@ -79,6 +81,7 @@ public class StepServices extends Service {
 	                SensorManager.SENSOR_DELAY_FASTEST);
 	        sensorManager.registerListener(stepDetector, sensor2,
 	                SensorManager.SENSOR_DELAY_FASTEST);
+
 	    }
 	 
 	 @Override
@@ -94,4 +97,6 @@ public class StepServices extends Service {
 			 sensorManager.unregisterListener(stepDetector);
 		}
 	 }
+	 
 }
+

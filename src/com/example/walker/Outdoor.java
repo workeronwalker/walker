@@ -73,7 +73,7 @@ public class Outdoor extends Observable{
 	public static double runSpeed;
 	public static float direction;
 	public static MyLocationData locData;
-	public static int distance;
+	public static double distance;
 	
 	public static MapStatusUpdate cMapStatus;
 	
