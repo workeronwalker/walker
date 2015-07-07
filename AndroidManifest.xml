@@ -51,31 +51,34 @@
             android:name=".SettingActivity"
             android:label="@string/title_section7" >
         </activity>
-<<<<<<< HEAD
-    
-        <service
-=======
         
-<<<<<<< HEAD
-        <service 
->>>>>>> origin/master
-            android:enabled="true" 
-            android:name="StepServices">
-		</service>
-
 		<service 
 		    android:enabled="true"
 		    android:name="OutdoorService">
-=======
+        </service>
+            
         <service android:enabled="true" android:name="StepServices">
 			<intent-filter>
 				<action android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
->>>>>>> cai
+
 		</service>
         
+        <receiver android:name="BootBroadcastReceiver">  
+            <intent-filter>  
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>  
+                <category android:name="android.intent.category.LAUNCHER" />  
+            </intent-filter>  
+        </receiver> 
+        
+        <receiver android:name="AlarmReceiver" />
+        
+        
     </application>
-
+    
+    <!-- Boot Broadcast Receiver -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+        
     <!-- BaiduMap -->
     <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

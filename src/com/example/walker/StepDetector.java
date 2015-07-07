@@ -211,7 +211,7 @@ public class StepDetector implements SensorEventListener {
     			lastBigger = biggerValue;
     			lastSmaller = smallerValue;
 		        
-    			if (biggerValue > 1.80 && smallerValue > 1.50 && smallerValue < 6) {
+    			if (biggerValue > 1.60 && smallerValue > 1.30 && smallerValue < 6) {
     				break;
     			}
     			dataHasBiggerValue = false;

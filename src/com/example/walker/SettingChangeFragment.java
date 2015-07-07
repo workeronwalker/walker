@@ -63,6 +63,9 @@ public class SettingChangeFragment extends Fragment {
             	editor.putString("goal", goalString);
                 //步骤3：提交
                 editor.commit();
+                if (goalString.isEmpty())
+                	goalString = "0";
+                StepCountFragment.user_goal = Integer.parseInt(goalString);
 				Fragment mFragment = new SettingFragment();
 				FragmentManager mFragmentManager = getFragmentManager();
 				mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
