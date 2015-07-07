@@ -73,13 +73,7 @@ public class MainActivity extends ActionBarActivity implements
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-<<<<<<< HEAD
 
-=======
-		// Set up the drawer. 显示左上角那个三条横杠的按钮
-		// mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-		//		(DrawerLayout) findViewById(R.id.drawer_layout), mOutdoorFragment, this);
->>>>>>> origin/master
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
@@ -87,22 +81,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-<<<<<<< HEAD
-		// update the main content by replacing fragments
-		
-		/* // 在NavigationDrawerFragment部分已经实现
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		fragmentManager
-				.beginTransaction()
-				.replace(R.id.frame_container,
-						PlaceholderFragment.newInstance(position + 1)).commit();*/
-		
-
-		//Intent actIntent = new Intent(MainActivity.this, OutdoorActivity.class);
-		//startActivity(actIntent);
-=======
-
->>>>>>> origin/master
 	}
 
 	public void onSectionAttached(int number) {

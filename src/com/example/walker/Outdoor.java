@@ -73,6 +73,7 @@ public class Outdoor extends Observable{
 	public static double runSpeed;
 	public static float direction;
 	public static MyLocationData locData;
+	public static int distance;
 	
 	public static MapStatusUpdate cMapStatus;
 	
@@ -200,12 +201,10 @@ public class Outdoor extends Observable{
 		}
 	}
 
-	public static int getSpeedColor(double time, LatLng point1, LatLng point2) { // 1
-																			// -
-																			// 4
-																			// -
-																			// 7
+	public static int getSpeedColor(double time, LatLng point1, LatLng point2) {
 		double distance = DistanceUtil.getDistance(point1, point2);
+		Outdoor.distance += distance;
+		Log.i("Outdoor", "distance: " + Outdoor.distance);
 		double speed = (distance / time) * 0.62 + runSpeed * 0.38;
 		runSpeed = speed;
 		if (speed > hi) {

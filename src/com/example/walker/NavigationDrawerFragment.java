@@ -111,11 +111,7 @@ public class NavigationDrawerFragment extends Fragment {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {	// 点击事件添加点
-						selectItem(position);						
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
+						selectItem(position);
 					}
 				});
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
@@ -245,12 +241,10 @@ public class NavigationDrawerFragment extends Fragment {
 		}
 		if (mCallbacks != null) {
 			Log.i ("Sample", position + " clicked");
-<<<<<<< HEAD
-			
-=======
+
 			boolean isOutdoor = false;
 			Intent act_intent;
->>>>>>> origin/master
+
 			Fragment mFragment;
 			FragmentManager mFragmentManager = getFragmentManager();
 			switch(position) {
@@ -281,22 +275,11 @@ public class NavigationDrawerFragment extends Fragment {
 				default:
 					mFragment = new HealthStatisticsFragment();
 			}
-<<<<<<< HEAD
-			FragmentManager mFragmentManager = getFragmentManager();
-			mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
-			
 
-=======
 			if (true) {
 				mFragmentManager.beginTransaction().replace(R.id.frame_container, mFragment).commit();
 			}
-			/*
-			if (isOutdoor) {
-				Outdoor mOutdoor = new Outdoor(mainContext);
-				mOutdoor.setUpBDmap(mainContext, getBDmapView(mainContext), mOutdoorFragment.getView());
-				mOutdoor.setUpSensor(mainContext);
-			}*/
->>>>>>> origin/master
+
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 	}
