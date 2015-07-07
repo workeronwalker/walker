@@ -7,6 +7,7 @@ import java.util.Observable;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -53,6 +54,8 @@ public class Outdoor extends Observable{
 
 	private MapView mMapView = null;
 	private BaiduMap mBaiduMap = null;
+	
+	private SharedPreferences.Editor editor;
 
 	
 	private float locDirection = 0;
@@ -73,7 +76,9 @@ public class Outdoor extends Observable{
 	public static double runSpeed;
 	public static float direction;
 	public static MyLocationData locData;
+	
 	public static double distance;
+	public static boolean isOutdoor;
 	
 	public static MapStatusUpdate cMapStatus;
 	
@@ -82,8 +87,12 @@ public class Outdoor extends Observable{
 	
 	boolean showTime;
 
-	public Outdoor() {
+	public Outdoor(final Context context) {
 		Log.i("Outdoor", "Setting up outdoor.class");
+		
+		// editor = getApplicationContext().getSharedPreferences("outDoor", 0).edit();
+		editor = context.getSharedPreferences("outDoor", 0).edit();
+		getHistoryInformation(context);
 		
 		//setUpBDmap(context);
 		//setUpSensor(context);
@@ -101,8 +110,28 @@ public class Outdoor extends Observable{
 		option.setNeedDeviceDirect(true);
 		mLocationClient.setLocOption(option);
 		mLocationClient.start();
-
 		// setUpSensor(context); // 设置方向传感器。
+	}
+	
+	public void getHistoryInformation(final Context context) {
+		
+		SharedPreferences reader = context.getSharedPreferences("outDoor", 0);
+		int i = 0;
+		while (reader.contains("latitude" + i++)) {
+			
+			LocPoint locPoi = new LocPoint(
+					(double)reader.getFloat("latitude" + i, -1), 
+					(double)reader.getFloat("longitude" + i, -1), 
+					reader.getBoolean("isSuccessive" + i, false), 
+					reader.getInt("color" + i, -1));
+			if (locPoi.latitute == -1 || locPoi.longitude == -1) {
+				Log.i("Outdoor", "can not find data on outDoor, i is: " + i);
+				break;
+			}
+			else
+				points.add(locPoi);
+		}
+		return;
 	}
 
 	public void setUpSensor(final Context context) {
@@ -170,7 +199,14 @@ public class Outdoor extends Observable{
 				.latitude(location.getLatitude())
 				.longitude(location.getLongitude()).build();
 
-			if (!isFirstLoc && location.getRadius() <= 10) {
+			if (location.getRadius() > 10) {
+				isOutdoor = false;
+				NotifyUI("isOutdoor");
+			}
+			else if (!isFirstLoc && location.getRadius() <= 10) {
+				isOutdoor = true;
+				NotifyUI("isOutdoor");
+				
 				// 精度超过9才加入点阵。
 				int cColor;
 				if (points.size() <= 1)
@@ -181,10 +217,22 @@ public class Outdoor extends Observable{
 								   points.get(points.size() -2).longitude),
 						new LatLng(location.getLatitude(), location.getLongitude()));
 				
-				LocPoint locPoi = new LocPoint(location.getLatitude(), location
-						.getLongitude(), runTime, cColor);
+				boolean isSuccessive = true;
+				if (runTime > 10)
+					isSuccessive = false;
 				
-				Log.i("Outdoor", "Loc.color" + locPoi.color + " Loc.time" + locPoi.time 
+				LocPoint locPoi = new LocPoint(location.getLatitude(), location
+						.getLongitude(), isSuccessive, cColor);
+				
+				int i = points.size();
+	            editor.putInt("tempData" + i, StepDetector.CURRENT_STEP);
+	            editor.putFloat("latitude" + i, (float)locPoi.latitute);
+	            editor.putFloat("longitude" + i, (float)locPoi.latitute);
+	            editor.putBoolean("isSuccessive" + i, locPoi.isSuccessive);
+	            editor.putInt("color" + i, locPoi.color);
+	            editor.commit();
+				
+				Log.i("Outdoor", "Loc.color" + locPoi.color /* +  " Loc.time" + locPoi.time */
 						+ " radius" + location.getRadius());
 				
 				points.add(locPoi);
@@ -232,12 +280,14 @@ public class Outdoor extends Observable{
 	public class LocPoint {
 		public double latitute;
 		public double longitude;
-		public double time;
+		public boolean isSuccessive;
+		// public double time;
 		public int color;
-		LocPoint(double lat, double lon, double t, int clr) {
+		LocPoint(double lat, double lon, boolean isOut, int clr) {
 			this.latitute = lat;
 			this.longitude = lon;
-			this.time = t;
+			this.isSuccessive = isOut;
+			// this.time = t;
 			this.color = clr;
 		}
 	}

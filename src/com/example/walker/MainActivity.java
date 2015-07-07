@@ -15,6 +15,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -61,12 +62,16 @@ public class MainActivity extends ActionBarActivity implements
 		
 		SDKInitializer.initialize(getApplicationContext());
 
-		outdoorDataSet = new Outdoor();
-		outdoorDataSet.setUpBDmapClient(this);
-		outdoorDataSet.setUpSensor(this);
+		outdoorDataSet = new Outdoor(getApplicationContext());
+    	setUpOutdoor();
+    	
+		/*
+		new Thread(new Runnable() {
+		    public void run() {
+		    	
+		    }
+		}).start();*/
 		
-		
-
 		mTitle = getTitle();
         
         // Set up the drawer
@@ -76,6 +81,10 @@ public class MainActivity extends ActionBarActivity implements
 
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+	}
+	public void setUpOutdoor() {
+		outdoorDataSet.setUpBDmapClient(this);
+		outdoorDataSet.setUpSensor(this);
 	}
 
 

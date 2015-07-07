@@ -94,7 +94,8 @@ public class OutdoorFragment extends Fragment implements Observer{
 		if (Outdoor.points.size() <= 2)
 			return;
 		for (int i = 1; i < Outdoor.points.size(); i++) {
-			drawLine(Outdoor.points.get(i-1), Outdoor.points.get(i));
+			if (Outdoor.points.get(i-1).isSuccessive == true)
+				drawLine(Outdoor.points.get(i-1), Outdoor.points.get(i));
 		}
 	}
 

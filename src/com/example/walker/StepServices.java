@@ -56,6 +56,7 @@ public class StepServices extends Service {
 		            } catch (InterruptedException e) {
 		                e.printStackTrace();
 		            }
+
 		            SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("tempfile", 0).edit();
 		            editor.putInt("tempData", StepDetector.CURRENT_STEP);
 		            editor.commit();
