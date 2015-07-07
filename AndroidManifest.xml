@@ -10,7 +10,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher_faith"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
@@ -51,11 +51,21 @@
             android:name=".SettingActivity"
             android:label="@string/title_section7" >
         </activity>
+<<<<<<< HEAD
         
+=======
+
+        <service
+            android:enabled="true" 
+            android:name="StepServices">
+		</service>
+
+>>>>>>> origin/master
 		<service 
 		    android:enabled="true"
 		    android:name="OutdoorService">
         </service>
+<<<<<<< HEAD
             
         <service android:enabled="true" android:name="StepServices">
 			<intent-filter>
@@ -63,6 +73,9 @@
 			</intent-filter>
 
 		</service>
+=======
+
+>>>>>>> origin/master
         
         <receiver android:name="BootBroadcastReceiver">  
             <intent-filter>  

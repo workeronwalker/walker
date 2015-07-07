@@ -2,14 +2,17 @@ package com.example.walker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +43,7 @@ import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 
-public class OutdoorService extends Service {
+public class Outdoor1 extends Observable{
 
 	// 百度地图相关
 	private LocationClient mLocationClient = null;
@@ -52,69 +55,48 @@ public class OutdoorService extends Service {
 	private BaiduMap mBaiduMap = null;
 
 	private MyLocationData locData;
-	/*
-	 * = new MyLocationData.Builder() .accuracy(20).direction(0)
-	 * .latitude(23.053115) .longitude(113.411462).build();
-	 */
 	private float locDirection = 0;
 
 	// BDm Location
 	private com.baidu.location.LocationClientOption.LocationMode tempMode = com.baidu.location.LocationClientOption.LocationMode.Hight_Accuracy;
 
-	private boolean isFirstLoc = true;
-	private List<LatLng> points = new ArrayList<LatLng>();
-	private int pointCounts = 0;
-	private TextView outdoorRadius, outdoorHi, outdoorLo;
-	double hi = 0;
-	double lo = 99999;
-	double runTime;
-	double runSpeed;
+	public static boolean isFirstLoc = true;
+	public static List<LatLng> points = new ArrayList<LatLng>();
+	public static int pointCounts = 0;
+	
+	private TextView outdoorRadius;
+	private static TextView outdoorHi;
+	private static TextView outdoorLo;
+	static double hi = 0;
+	static double lo = 99999;
+	public static double runTime;
+	public static double runSpeed;
+	Context mContext = null;
+	FrameLayout container;
+	
+	boolean showTime;
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
+	public Outdoor1(final Context context) {
+		Log.i("Outdoor", "Setting up outdoor.class");
+		
+		//setUpBDmap(context);
+		//setUpSensor(context);
 	}
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Log.i("OutdoorService", "onCreate");
-		SDKInitializer.initialize(getApplicationContext());
-		//setUpBDmap();
-		/*
-		new Thread(new Runnable() {
-			public void run() {
-				setUpBDmap();
-			}
-		}).start();*/
-	}
-
-	private void setUpBDmap() {
+	public void setUpBDmap(final Context context, MapView mMapView, View fragmentView) {
 		// 获取父view
-		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.fragment_outdoor, null);
-		FrameLayout container = (FrameLayout) layout
-				.findViewById(R.id.frame_outdoor);
-		outdoorRadius = (TextView) layout.findViewById(R.id._outdoor_radius);
-		outdoorLo = (TextView) layout.findViewById(R.id._outdoor_lo);
-		outdoorHi = (TextView) layout.findViewById(R.id._outdoor_hi);
+		mContext = context;
+		Log.i("Outdoor", "why dont you show this line?");
 
-		// 初始化地图
-		// mMapView = (MapView) findViewById(R.id.bmapView);
-		BaiduMapOptions mapOptions = new BaiduMapOptions();
-		mapOptions.scaleControlEnabled(false); // 隐藏比例尺控件
-		// mapOptions.zoomControlsEnabled(false); // 隐藏缩放按钮
-		mapOptions.mapStatus(new MapStatus.Builder().zoom(18).build()); // 设定缩放级别。
-
-		mMapView = new MapView(this, mapOptions);
-		mMapView.setLayoutParams(new ViewGroup.LayoutParams(
-				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-		mMapView.setClickable(true);
-		container.addView(mMapView);
-
-		// setContentView(mMapView);
-
+		FrameLayout mFramLayout = (FrameLayout) fragmentView.findViewById(R.id.frameLayout_outdoor);
+		outdoorRadius = (TextView) fragmentView.findViewById(R.id._outdoor_radius);
+		outdoorLo = (TextView) fragmentView.findViewById(R.id._outdoor_lo);
+		outdoorHi = (TextView) fragmentView.findViewById(R.id._outdoor_hi);
+		outdoorHi.setText("You are half way there");
+		// mMapView = (MapView) layout.findViewById(R.id.bmapView);
+		Log.i("tinkerOutdoor", "You should notice this very long scentence " + mFramLayout.getId());
+		mFramLayout.addView(mMapView);
+		
 		mBaiduMap = mMapView.getMap();
 		// 设置定位模式为普通
 		mCurrentMode = LocationMode.FOLLOWING;
@@ -129,7 +111,7 @@ public class OutdoorService extends Service {
 		// 定位初始化
 		// mLocationClient = new LocationClient(getApplicationContext()); //
 		// 声明LocationClient类
-		mLocationClient = new LocationClient(this);
+		mLocationClient = new LocationClient(context);
 		mLocationClient.registerLocationListener(myListener); // 注册监听函数
 		LocationClientOption option = new LocationClientOption();
 		option.setLocationMode(tempMode);
@@ -140,12 +122,13 @@ public class OutdoorService extends Service {
 		mLocationClient.setLocOption(option);
 		mLocationClient.start();
 
-		setUpSensor(); // 设置方向传感器。
+		// setUpSensor(context); // 设置方向传感器。
 	}
 
-	private void setUpSensor() {
+	public void setUpSensor(final Context context) {
 		// 传感器管理器，百度地图中没有实现手机方向感测，需要通过手机内置陀螺仪感应。
-		SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+		SensorManager sm = (SensorManager) context
+				.getSystemService(context.SENSOR_SERVICE);
 		// 注册传感器(Sensor.TYPE_ORIENTATION(方向传感器);SENSOR_DELAY_FASTEST(0毫秒延迟);
 		// SENSOR_DELAY_GAME(20,000毫秒延迟)、SENSOR_DELAY_UI(60,000毫秒延迟))
 		sm.registerListener(
@@ -166,6 +149,8 @@ public class OutdoorService extends Service {
 								if (!isFirstLoc) {
 									// 修改定位图标方向
 									// locData.
+									// =======================================
+									/*
 									locData = new MyLocationData.Builder()
 											.accuracy(locData.accuracy)
 											.direction(x)
@@ -175,12 +160,11 @@ public class OutdoorService extends Service {
 									// locData.direction = x;
 									// 重新设置当前位置数据
 									mBaiduMap.setMyLocationData(locData);
-									/*
-									 * LatLng ll = new LatLng(locData.latitude,
-									 * locData.longitude); MapStatusUpdate u =
-									 * MapStatusUpdateFactory.newLatLng(ll);
-									 * mBaiduMap.animateMapStatus(u);
-									 */
+									*/
+									// =======================================
+									Intent intent = new Intent(OutdoorFragment.DIRECTION_CHANGED);
+									intent.putExtra("direction", x);
+									LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 								}
 								// myLocationOverlay.setData(locData);
 								// mMapView.refresh();
@@ -207,36 +191,65 @@ public class OutdoorService extends Service {
 			if (location == null)
 				return;
 			/*
-			 * 本节代码测试用 StringBuffer sb = new StringBuffer(256);
-			 * sb.append("time : "); sb.append(location.getTime());
-			 * sb.append("\nerror code : "); sb.append(location.getLocType());
-			 * sb.append("\nlatitude : "); sb.append(location.getLatitude());
-			 * sb.append("\nlontitude : "); sb.append(location.getLongitude());
-			 * sb.append("\nradius : "); sb.append(location.getRadius());
-			 * sb.append("\ndirection : "); sb.append(location.getDirection());
-			 * if (location.getLocType() == BDLocation.TypeGpsLocation) {
-			 * sb.append("\nspeed : "); sb.append(location.getSpeed());
-			 * sb.append("\nsatellite : ");
-			 * sb.append(location.getSatelliteNumber()); } else if
-			 * (location.getLocType() == BDLocation.TypeNetWorkLocation) {
-			 * sb.append("\naddr : "); sb.append(location.getAddrStr()); }
-			 * Log.i("BDmap", sb.toString());
-			 */
+			StringBuffer sb = new StringBuffer(256);
+			sb.append("time : ");
+			sb.append(location.getTime());
+			sb.append("\nerror code : ");
+			sb.append(location.getLocType());
+			sb.append("\nlatitude : ");
+			sb.append(location.getLatitude());
+			sb.append("\nlontitude : ");
+			sb.append(location.getLongitude());
+			sb.append("\nradius : ");
+			sb.append(location.getRadius());
+			sb.append("\ndirection : ");
+			sb.append(location.getDirection());
+			if (location.getLocType() == BDLocation.TypeGpsLocation) {
+				sb.append("\nspeed : ");
+				sb.append(location.getSpeed());
+				sb.append("\nsatellite : ");
+				sb.append(location.getSatelliteNumber());
+			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
+				sb.append("\naddr : ");
+				sb.append(location.getAddrStr());
+			}
+			Log.i("BDmap", sb.toString());
+			*/
+			// =============================================================
+			// locData = new MyLocationData.Builder()
+			// 		.accuracy(location.getRadius()).direction(locDirection)
+			//		.latitude(location.getLatitude())
+			//		.longitude(location.getLongitude()).build();
+			// mBaiduMap.setMyLocationData(locData);
+			// =============================================================
+			Log.i("Outdoor", "data sent");
+			/*
+			Log.i("Outdoor", ""+container.getChildCount()+ " 111");
+			Log.i("Outdoor", ""+container.getChildAt(0)+ " 111");
+			Log.i("Outdoor", ""+container.getChildAt(0).getVisibility()+ " 111");*/
+			//container.setVisibility(1);
+			// Log.i("Outdoor", ""+container.getChildAt(0).getZ() + " 111");
+			
+			Intent intent = new Intent(OutdoorFragment.DIRECTION_CHANGED);
+			intent.putExtra("accuracy", location.getRadius())
+				.putExtra("direction", locDirection)
+				.putExtra("latitude", location.getLatitude())
+				.putExtra("longitude", location.getLongitude());
+			
+			LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
-			locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius()).direction(locDirection)
-					.latitude(location.getLatitude())
-					.longitude(location.getLongitude()).build();
-			mBaiduMap.setMyLocationData(locData);
-			// Log.i("BDmap", "hi");
+			// =============================================================
+			
 			if (isFirstLoc) {
 				isFirstLoc = false;
+				/*
 				LatLng ll = new LatLng(location.getLatitude(),
 						location.getLongitude());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-				mBaiduMap.animateMapStatus(u);
+				
+				mBaiduMap.animateMapStatus(u);*/
 			}
-			outdoorRadius.setText("" + location.getRadius());
+			// outdoorRadius.setText("" + location.getRadius());
 
 			if (!isFirstLoc /* && pointCounts >= 7 */
 					&& location.getRadius() <= 10) {
@@ -280,7 +293,7 @@ public class OutdoorService extends Service {
 		}
 	}
 
-	private int getSpeedColor(double time, LatLng point1, LatLng point2) { // 1
+	public static int getSpeedColor(double time, LatLng point1, LatLng point2) { // 1
 																			// -
 																			// 4
 																			// -
@@ -290,11 +303,11 @@ public class OutdoorService extends Service {
 		runSpeed = speed;
 		if (speed > hi) {
 			hi = speed;
-			outdoorHi.setText("" + hi);
+			// outdoorHi.setText("" + hi);
 		}
 		if (speed < lo) {
 			lo = speed;
-			outdoorLo.setText("" + lo);
+			// outdoorLo.setText("" + lo);
 		}
 		if (speed <= 1) // [0, 1]
 			return 0xAAFF0000;
@@ -308,15 +321,5 @@ public class OutdoorService extends Service {
 			return ret - ret % 65536 - 256;
 		}
 		return 0xAAFFFF00;
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		return super.onStartCommand(intent, flags, startId);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
 	}
 }

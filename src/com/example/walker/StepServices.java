@@ -14,6 +14,7 @@ import android.os.SystemClock;
 public class StepServices extends Service {
 
 	public static Boolean flag = false;
+<<<<<<< HEAD
 	
 	private static final long ALARM_INTERVAL = 3 * 1000;
 	private static final int BACKUP_INTERVAL = 500;
@@ -22,6 +23,12 @@ public class StepServices extends Service {
 	private SensorManager sensorManager;
 	private StepDetector stepDetector;
 
+=======
+
+    private SensorManager sensorManager;
+    private StepDetector stepDetector;
+    
+>>>>>>> origin/master
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
@@ -29,6 +36,7 @@ public class StepServices extends Service {
 	}
 
 
+<<<<<<< HEAD
 	public void onCreate() {
 		super.onCreate();
 		AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);  
@@ -61,16 +69,32 @@ public class StepServices extends Service {
 		        }
 		    }
 		}).start();
+=======
+	 public void onCreate() {
+	        super.onCreate();
+	        Log.i("stepServices","onCreate");
+
+	        //这里开启了一个线程，因为后台服务也是在主线程中进行，这样可以安全点，防止主线程阻塞
+	        new Thread(new Runnable() {
+	            public void run() {
+	                startStepDetector();
+	            }
+	        }).start();
+>>>>>>> origin/master
 	 }
 	
 	 private void startStepDetector() {
 	        flag = true;
 	        stepDetector = new StepDetector(this);
 	        sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);//获取传感器管理器的实例
+<<<<<<< HEAD
 	        
 	        SharedPreferences reader = getApplicationContext().getSharedPreferences("tempfile", 0);
 	        StepDetector.CURRENT_STEP = reader.getInt("tempData", 0);
             
+=======
+	       
+>>>>>>> origin/master
 	        Sensor sensor1 = sensorManager
 	                .getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 	        Sensor sensor2 = sensorManager
@@ -78,7 +102,12 @@ public class StepServices extends Service {
 	        sensorManager.registerListener(stepDetector, sensor1,
 	                SensorManager.SENSOR_DELAY_FASTEST);
 	        sensorManager.registerListener(stepDetector, sensor2,
+<<<<<<< HEAD
 	                SensorManager.SENSOR_DELAY_FASTEST);
+=======
+	        		SensorManager.SENSOR_DELAY_FASTEST);
+	       
+>>>>>>> origin/master
 	    }
 	 
 	 @Override
@@ -95,4 +124,10 @@ public class StepServices extends Service {
 		}
 	 }
 	 
+<<<<<<< HEAD
 }
+=======
+	    }
+
+}
+>>>>>>> origin/master

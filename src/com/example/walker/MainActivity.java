@@ -1,15 +1,35 @@
 package com.example.walker;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.model.LatLng;
+
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -26,32 +46,48 @@ public class MainActivity extends ActionBarActivity implements
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-
+	
+	public OutdoorFragment mOutdoorFragment;
+	
+	public static Outdoor outdoorDataSet;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_main);
+		
+		
+		SDKInitializer.initialize(getApplicationContext());
+
+		outdoorDataSet = new Outdoor();
+		outdoorDataSet.setUpBDmapClient(this);
+		outdoorDataSet.setUpSensor(this);
+		
+		
+
 		mTitle = getTitle();
-		
-		// 初始化百度地图sdkcontext信息，传入ApplicationContext
-		//SDKInitializer.initialize(getApplicationContext());
-		
-		startService(new Intent(getApplicationContext(), OutdoorService.class));
-		startService(new Intent(getApplicationContext(), StepServices.class));
         
         // Set up the drawer
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
+<<<<<<< HEAD
 
+=======
+		// Set up the drawer. 显示左上角那个三条横杠的按钮
+		// mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+		//		(DrawerLayout) findViewById(R.id.drawer_layout), mOutdoorFragment, this);
+>>>>>>> origin/master
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		
 	}
-	
+
+
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
+<<<<<<< HEAD
 		// update the main content by replacing fragments
 		
 		/* // 在NavigationDrawerFragment部分已经实现
@@ -64,6 +100,9 @@ public class MainActivity extends ActionBarActivity implements
 
 		//Intent actIntent = new Intent(MainActivity.this, OutdoorActivity.class);
 		//startActivity(actIntent);
+=======
+
+>>>>>>> origin/master
 	}
 
 	public void onSectionAttached(int number) {
@@ -99,31 +138,9 @@ public class MainActivity extends ActionBarActivity implements
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
 	}
-	/*	注释掉这一段代码可以移除左上角三个点。
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		if (!mNavigationDrawerFragment.isDrawerOpen()) {
-			// Only show items in the action bar relevant to this screen
-			// if the drawer is not showing. Otherwise, let the drawer
-			// decide what to show in the action bar.
-			getMenuInflater().inflate(R.menu.main, menu);
-			restoreActionBar();
-			return true;
-		}
-		return super.onCreateOptionsMenu(menu);
-	}*/
-	/*
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}*/
+	
+
+
 
 	/**
 	 * A placeholder fragment containing a simple view.
