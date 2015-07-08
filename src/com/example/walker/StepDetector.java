@@ -1,5 +1,9 @@
 package com.example.walker;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -13,11 +17,19 @@ public class StepDetector implements SensorEventListener {
     private static final float NOISE = 0.0001f;
     private static final float ZSCALE = 0.8660f;       //用于消除Z轴的影响，检测手机3轴状态
     private static final long MININTERVAL = 200;    //两次计数之间的最小时间间隔
-    
 	public static int CURRENT_STEP = 0;
 	
-    private ArrayList<Double> verticalDataOfOneStep = new ArrayList<Double>();
-    private ArrayList<Double> horizontalDataOfOneStep = new ArrayList<Double>();
+	private static float THREDHOLD = 5.0f;
+	
+	public static double ACCELRATE = 0;
+	public static double XY = 0;
+	public static double Z = 0;
+	
+    private ArrayList<Double> detectedDataOfOneStep = new ArrayList<Double>();
+    private ArrayList<Double> filtedDataOfOneStep = new ArrayList<Double>();
+    
+    private ArrayList<Double> thredholdBackup = new ArrayList<Double>();
+    private ArrayList<Double> biggestValue = new ArrayList<Double>();
     
     private static long start = 0;   //用于计算两次计步之间的时间间隔，消除噪点
     private static long end = 0;
@@ -38,6 +50,7 @@ public class StepDetector implements SensorEventListener {
     public static double zBigger;
     public static double zSmaller;
     
+    public static Context mContext;
     
     /**
      * 传入上下文的构造函数
@@ -46,7 +59,7 @@ public class StepDetector implements SensorEventListener {
      */
     public StepDetector(Context context) {
         super();
-        
+        mContext = context;
     }
  
     //当传感器检测到的数值发生变化时就会调用这个方法
@@ -73,9 +86,11 @@ public class StepDetector implements SensorEventListener {
         	if (gravityRead && accelerationRead) {
         		
         		if (zGravity < GRAVITY*ZSCALE) {
-        			double lenA = Math.sqrt(xAcceleration*xAcceleration + yAcceleration*yAcceleration 
-            				+ zAcceleration*zAcceleration);
-            		double lenG = Math.sqrt(xGravity*xGravity + yGravity*yGravity 
+        			double lenA = Math.sqrt(xAcceleration * xAcceleration + 
+        					yAcceleration * yAcceleration +
+        					zAcceleration * zAcceleration);
+            		
+        			double lenG = Math.sqrt(xGravity*xGravity + yGravity*yGravity 
             				+ zGravity*zGravity);
             		double AG = xGravity*xAcceleration + yGravity*yAcceleration
             				+ zGravity*zAcceleration;
@@ -84,13 +99,34 @@ public class StepDetector implements SensorEventListener {
             		double vertical = - lenA * cosAG;
             		double horizontal = lenA * sinAG;
             		
-            		if (justFinishOneStep(vertical, horizontal)) {
+            		XY = horizontal;
+            		Z = vertical;
+            		
+            	    FileOutputStream fos;
+					try {
+						fos = mContext.openFileOutput("DataOutput.txt", Context.MODE_APPEND);
+						fos.write((vertical + ",").getBytes());
+						fos.write((horizontal + "").getBytes());
+						fos.write("\n".getBytes());
+	            	    fos.close(); 
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}  
+            	    
+        			
+            		//if (justFinishOneStep(lenA)) {
+            		if (vertical < - 0.4) {
                 		end = System.currentTimeMillis();
-                		if (end - start >= MININTERVAL) {
+                		long interval = end - start;
+                		if (interval >= MININTERVAL) {
                 			CURRENT_STEP++;
                 			start = end;
-
                 		}
+
                 	}
         		}
         		
@@ -103,26 +139,23 @@ public class StepDetector implements SensorEventListener {
  
     }
     
-    private boolean justFinishOneStep(double newVerticalData, double newHorizontalData) {
-    	boolean isVerticalFinished = false;
-    	boolean isHorizontalFinished = false;
-    	verticalDataOfOneStep.add(newVerticalData);
-    	horizontalDataOfOneStep.add(newHorizontalData);
-    	verticalDataOfOneStep = eliminateRedundancies(verticalDataOfOneStep);
-    	horizontalDataOfOneStep = eliminateRedundancies(horizontalDataOfOneStep);
-    	isVerticalFinished = analysisStepDataV(verticalDataOfOneStep);
-    	isHorizontalFinished = analysisStepDataH(horizontalDataOfOneStep);
+    private boolean justFinishOneStep(double newData) {
+    	boolean isFinished = false;
+    	detectedDataOfOneStep.add(newData);
+    	detectedDataOfOneStep = eliminateRedundancies(detectedDataOfOneStep);
+    	if (detectedDataOfOneStep.size() >= 5) {
+    		filtDataOfSteps(detectedDataOfOneStep);
+    		detectedDataOfOneStep.clear();
+    	}
+
+      	isFinished = analysisStepDataH(filtedDataOfOneStep);
     	
-    	if (isVerticalFinished && isHorizontalFinished) {
-    		verticalDataOfOneStep.clear();
-    		horizontalDataOfOneStep.clear();
+    	if (isFinished) {
+    		filtedDataOfOneStep.clear();
     		return true;
     	} else {
-    		if (verticalDataOfOneStep.size() >= 100) {
-    			verticalDataOfOneStep.clear();
-    		}
-    		if (horizontalDataOfOneStep.size() >= 100) {
-    			horizontalDataOfOneStep.clear();
+    		if (filtedDataOfOneStep.size() >= 100) {
+    			filtedDataOfOneStep.clear();
     		}
     	}
     	return false;
@@ -144,44 +177,32 @@ public class StepDetector implements SensorEventListener {
     	return rawData;
     }
     
-    private boolean analysisStepDataV(ArrayList<Double> stepData) {
-    	boolean answerOfAnalysis = false;
-    	boolean dataHasBiggerValue = false;
-    	boolean dataHasSmallerValue = false;
-    	double biggerValue = 0.0;
-    	double smallerValue = 0.0;
-    	for (int i=1; i<stepData.size() - 1; i++) {
-    		if (stepData.get(i).floatValue() > NOISE) {
-    			if ((stepData.get(i).floatValue() > stepData.get(i - 1).floatValue()) && 
-    					(stepData.get(i).floatValue() > stepData.get(i + 1).floatValue())) {
-    				dataHasBiggerValue = true;
-    				biggerValue = stepData.get(i).floatValue();
-    			}
-    		} 
-    		if (stepData.get(i).floatValue() < -NOISE) {
-    			if ((stepData.get(i).floatValue() < stepData.get(i - 1).floatValue()) && 
-    					(stepData.get(i).floatValue() < stepData.get(i + 1).floatValue())) {
-    				dataHasSmallerValue = true;
-    				smallerValue = stepData.get(i).floatValue();
-    			}
-    		}  
-    		
-    		if (dataHasBiggerValue && dataHasSmallerValue) {
-    			double diff = biggerValue - smallerValue;
-    			zBigger = biggerValue;
-    			zSmaller = smallerValue;
-		        
-//    			if (biggerValue > 0.01 && smallerValue < -0.01) {
-//    				break;
-//    			}
-//    			dataHasBiggerValue = false;
-//    			dataHasSmallerValue = false;
-    			break;
-    		}
+    private void filtDataOfSteps(ArrayList<Double> rawData) {
+    	double result = 0;
+    	for (int i = 0; i < rawData.size(); i++) {
+    		result += rawData.get(i).floatValue();
     	}
-    	answerOfAnalysis = dataHasBiggerValue && dataHasSmallerValue;
-    	return answerOfAnalysis;
-    }
+    	result /= rawData.size();
+    	filtedDataOfOneStep.add(result);
+    	thredholdBackup.add(result);
+    	
+    	ACCELRATE = result;
+    	
+    	FileOutputStream fos;
+		try {
+			fos = mContext.openFileOutput("WodeWode.txt", Context.MODE_APPEND);
+			fos.write((result + ",").getBytes());
+			fos.write("\n".getBytes());
+    	    fos.close(); 
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+	    
+   }
     
     private boolean analysisStepDataH(ArrayList<Double> stepData) {
     	boolean answerOfAnalysis = false;
@@ -189,37 +210,79 @@ public class StepDetector implements SensorEventListener {
     	boolean dataHasSmallerValue = false;
     	double biggerValue = 0.0;
     	double smallerValue = 0.0;
-    	for (int i=1; i<stepData.size() - 1; i++) {
-    		if (stepData.get(i).floatValue() > NOISE) {
-    			if ((stepData.get(i).floatValue() > stepData.get(i - 1).floatValue()) && 
-    					(stepData.get(i).floatValue() > stepData.get(i + 1).floatValue())) {
-    				dataHasBiggerValue = true;
-    				biggerValue = stepData.get(i).floatValue();
-    			}
-    			
-    			if ((stepData.get(i).floatValue() < stepData.get(i - 1).floatValue()) && 
-    					(stepData.get(i).floatValue() < stepData.get(i + 1).floatValue())) {
-    				dataHasSmallerValue = true;
-    				smallerValue = stepData.get(i).floatValue();
+    	
+    	for (int i = 0; i < stepData.size(); i++) {
+    		if (stepData.get(i).floatValue() > THREDHOLD)
+    			answerOfAnalysis = true;
+    	}
+    	
+    	for (int i = 1; i < thredholdBackup.size() - 1; i++) {
+    		if (thredholdBackup.get(i).floatValue() > NOISE) {
+    			if ((thredholdBackup.get(i).floatValue() > thredholdBackup.get(i - 1).floatValue()) && 
+    					(thredholdBackup.get(i).floatValue() > thredholdBackup.get(i + 1).floatValue())) {
+    				double bValue = thredholdBackup.get(i).floatValue();
+    				biggestValue.add(bValue);
+    				thredholdBackup.clear();
     			}
     		} 
-    		
     		
     		if (dataHasBiggerValue && dataHasSmallerValue) {
     			double diff = biggerValue - smallerValue;
     			
     			lastBigger = biggerValue;
     			lastSmaller = smallerValue;
-		        
-    			if (biggerValue > 1.60 && smallerValue > 1.30 && smallerValue < 6) {
-    				break;
-    			}
-    			dataHasBiggerValue = false;
-    			dataHasSmallerValue = false;
+    	        
+//    			if (biggerValue > 1.60 && smallerValue > 1.30 && smallerValue < 6) {
+//    				break;
+//    			}
+//    			dataHasBiggerValue = false;
+//    			dataHasSmallerValue = false;
     			break;
     		}
+		}
+    	
+    	if (biggestValue.size() > 5) {
+			for (int i = 0; i < biggestValue.size(); i++) {
+				THREDHOLD += biggestValue.get(i).floatValue();
+			}
+			
+			THREDHOLD /= biggestValue.size();
+			biggestValue.clear();
+//			THREDHOLD = (THREDHOLD > 5 ? THREDHOLD : 5 );
     	}
-    	answerOfAnalysis = dataHasBiggerValue && dataHasSmallerValue;
+    	
+//    	for (int i = 1; i < stepData.size() - 1; i++) {
+//    		
+//    		if (stepData.get(i).floatValue() > NOISE) {
+//    			if ((stepData.get(i).floatValue() > stepData.get(i - 1).floatValue()) && 
+//    					(stepData.get(i).floatValue() > stepData.get(i + 1).floatValue())) {
+//    				dataHasBiggerValue = true;
+//    				biggerValue = stepData.get(i).floatValue();
+//    			}
+//    			
+//    			if ((stepData.get(i).floatValue() < stepData.get(i - 1).floatValue()) && 
+//    					(stepData.get(i).floatValue() < stepData.get(i + 1).floatValue())) {
+//    				dataHasSmallerValue = true;
+//    				smallerValue = stepData.get(i).floatValue();
+//    			}
+//    		} 
+//    		
+//    		
+//    		if (dataHasBiggerValue && dataHasSmallerValue) {
+//    			double diff = biggerValue - smallerValue;
+//    			
+//    			lastBigger = biggerValue;
+//    			lastSmaller = smallerValue;
+//		        
+////    			if (biggerValue > 1.60 && smallerValue > 1.30 && smallerValue < 6) {
+////    				break;
+////    			}
+////    			dataHasBiggerValue = false;
+////    			dataHasSmallerValue = false;
+//    			break;
+//    		}
+//    	}
+//    	answerOfAnalysis = dataHasBiggerValue && dataHasSmallerValue;
     	return answerOfAnalysis;
     }
 

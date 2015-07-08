@@ -106,6 +106,13 @@ public class StepCountView extends View {
         canvas.drawText(STEP_STRING, centerX, 
         		centerY - radius / 2, paint);
         
+        canvas.drawText(StepDetector.ACCELRATE+"", centerX, 
+        		centerY + centerY + MARGIN, paint);
+        canvas.drawText(StepDetector.XY+"", centerX, 
+        		centerY + centerY + MARGIN + MARGIN, paint);
+        canvas.drawText(StepDetector.Z+"", centerX, 
+        		centerY + centerY + MARGIN + MARGIN + MARGIN, paint);
+        
         super.onDraw(canvas);  
     }  
   

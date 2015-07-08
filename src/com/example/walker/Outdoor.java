@@ -227,7 +227,7 @@ public class Outdoor extends Observable{
 				int i = points.size();
 	            editor.putInt("tempData" + i, StepDetector.CURRENT_STEP);
 	            editor.putFloat("latitude" + i, (float)locPoi.latitute);
-	            editor.putFloat("longitude" + i, (float)locPoi.latitute);
+	            editor.putFloat("longitude" + i, (float)locPoi.longitude);
 	            editor.putBoolean("isSuccessive" + i, locPoi.isSuccessive);
 	            editor.putInt("color" + i, locPoi.color);
 	            editor.commit();
