@@ -78,11 +78,15 @@ public class StepServices extends Service {
 	                .getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 	        Sensor sensor2 = sensorManager
 	                .getDefaultSensor(Sensor.TYPE_GRAVITY);
+	        Sensor sensor3 = sensorManager
+	                .getDefaultSensor(Sensor.TYPE_LIGHT);
+	        
 	        sensorManager.registerListener(stepDetector, sensor1,
 	                SensorManager.SENSOR_DELAY_FASTEST);
 	        sensorManager.registerListener(stepDetector, sensor2,
 	                SensorManager.SENSOR_DELAY_FASTEST);
-
+	        sensorManager.registerListener(stepDetector, sensor3,
+	                SensorManager.SENSOR_DELAY_FASTEST);
 	    }
 	 
 	 @Override

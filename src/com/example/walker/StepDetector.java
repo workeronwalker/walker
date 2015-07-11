@@ -1,10 +1,8 @@
 package com.example.walker;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -17,6 +15,9 @@ public class StepDetector implements SensorEventListener {
     private static final float NOISE = 0.0001f;
     private static final float ZSCALE = 0.8660f;       //用于消除Z轴的影响，检测手机3轴状态
     private static final long MININTERVAL = 200;    //两次计数之间的最小时间间隔
+    private static final long MAXINTERVAL = 2000;    //两次计数之间的最大时间间隔
+    private static final long DETECTTOLERANCE = 800;
+
 	public static int CURRENT_STEP = 0;
 	
 	private static float THREDHOLD = 5.0f;
@@ -33,9 +34,11 @@ public class StepDetector implements SensorEventListener {
     
     private static long start = 0;   //用于计算两次计步之间的时间间隔，消除噪点
     private static long end = 0;
+    private static long lastDetect = 0;
     
     private static boolean gravityRead = false;
     private static boolean accelerationRead = false;
+    private static boolean isInHand = false;
     
     private float xGravity;
     private float yGravity;
@@ -52,6 +55,20 @@ public class StepDetector implements SensorEventListener {
     
     public static Context mContext;
     
+    private static final double TOLERANCE = 0.5;
+    
+    private double vertical;
+    private static double lastInterval;
+    private static double intervalSum = 0;
+    private static int pendingCount = 0;
+    private static int pendingSteps = 0; 
+    
+    public static int flashCount = 0;
+    public static int steadyCount = 0;
+    
+    private static double pin;
+    
+    private float light;
     /**
      * 传入上下文的构造函数
      * 
@@ -61,13 +78,24 @@ public class StepDetector implements SensorEventListener {
         super();
         mContext = context;
     }
- 
+    
     //当传感器检测到的数值发生变化时就会调用这个方法
     public void onSensorChanged(SensorEvent event) {
     	
         Sensor sensor = event.sensor;
         
         synchronized (this) {
+        	
+        	if (sensor.getType() == Sensor.TYPE_LIGHT) {
+        		light = event.values[0];
+        		if (light > 5) {
+        			pin = 6;
+        			isInHand = true;
+        		} else {
+        			pin = 3;
+        			isInHand = false;
+        		}
+        	}	
         	
         	if (sensor.getType() == Sensor.TYPE_GRAVITY) {
         		xGravity = event.values[0];
@@ -84,6 +112,7 @@ public class StepDetector implements SensorEventListener {
         	}
         	
         	if (gravityRead && accelerationRead) {
+
         		
         		if (zGravity < GRAVITY*ZSCALE) {
         			double lenA = Math.sqrt(xAcceleration * xAcceleration + 
@@ -95,195 +124,160 @@ public class StepDetector implements SensorEventListener {
             		double AG = xGravity*xAcceleration + yGravity*yAcceleration
             				+ zGravity*zAcceleration;
             		double cosAG = AG / (lenA * lenG);
-            		double sinAG = Math.sqrt(1 - cosAG*cosAG);
-            		double vertical = - lenA * cosAG;
-            		double horizontal = lenA * sinAG;
+            		vertical = - lenA * cosAG;
             		
-            		XY = horizontal;
-            		Z = vertical;
-            		
-            	    FileOutputStream fos;
-					try {
-						fos = mContext.openFileOutput("DataOutput.txt", Context.MODE_APPEND);
-						fos.write((vertical + ",").getBytes());
-						fos.write((horizontal + "").getBytes());
-						fos.write("\n".getBytes());
-	            	    fos.close(); 
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}  
-            	    
-        			
-            		//if (justFinishOneStep(lenA)) {
-            		if (vertical < - 0.4) {
+            		int stepIncrease;	
+					
+					if (!isInHand) {
+						stepIncrease = howManyStep(vertical);
+					} else {
+						stepIncrease = countInHand(vertical);
+					}
+					
+					if (stepIncrease > 0) {
                 		end = System.currentTimeMillis();
-                		long interval = end - start;
-                		if (interval >= MININTERVAL) {
-                			CURRENT_STEP++;
+                		if (start == 0)
                 			start = end;
-                		}
+                		if (lastDetect == 0)
+                			lastDetect = end;
+                		long interval = end - start;
+                		if (interval > MAXINTERVAL){
+                    		lastInterval = 0;
+                    		pendingSteps = 0;
+            				pendingCount = 0;
+            				intervalSum = 0;
+            				start = end;
+            				lastDetect = end;
+                    	} else if (interval >= MININTERVAL) {
+                			if (isInHand && (interval > lastInterval * (1 + TOLERANCE) ||
+                				(interval < lastInterval * (1 - TOLERANCE)))) {
+                				if (end - lastDetect <= DETECTTOLERANCE) {
+                					pendingSteps += stepIncrease;
+                    				intervalSum += interval;
+                    				pendingCount++;
+                    				StepCountView.isSteady = false;
+                    				flashCount += 5;
+                    				if (flashCount > 1000000000)
+                    		        	flashCount = 0;
+                    				lastDetect = end;
+                				} else {
+                					pendingSteps = 0;
+                    				pendingCount = 0;
+                    				intervalSum = 0;
+                    				lastDetect = end;
+                    				flashCount = 0;
+                				}
+                				
+                				if (pendingCount >= 10) {
+                					StepCountView.isSteady = true;
+//                					steadyCount = 1;
+//                    				new Timer().schedule(new TimerTask() {
+//                    			        @Override
+//                    			        public void run() {
+//                    			            steadyCount = 0;
+//                    			            cancel();
+//                    			        }
+//                    			    }, 100);
+                    				
+                    				CURRENT_STEP += pendingSteps;
+                    				lastInterval = intervalSum / pendingCount;
+                    				pendingSteps = 0;
+                    				pendingCount = 0;
+                    				intervalSum = 0;
+                    				flashCount = 0;
+                    			}
+                				
+                			} else {
+            					StepCountView.isSteady = true;
+                				steadyCount = 1;
+                				new Timer().schedule(new TimerTask() {
+                			        @Override
+                			        public void run() {
+                			            steadyCount = 0;
+                			            cancel();
+                			        }
+                			    }, 100);
+                			     
+                    			CURRENT_STEP += stepIncrease;
+                    			lastInterval = interval;
+                    			pendingSteps = 0;
+                				pendingCount = 0;
+                				intervalSum = 0;
+                			}
+                			start = end;
+                		} 
+                		
 
-                	}
+                	} 
         		}
         		
         	}
  
         }
     }
- 
+    
+    double llStep, lStep, cStep, maxMax = 0, minMin = 0;
+    int maxInterval = 0, minInterval = 0;
+    
+    private int howManyStep(double inputStep) {
+    	llStep = lStep;
+    	lStep = cStep;
+    	cStep = inputStep;
+    	int count = 0;
+    	
+    	if (lStep > cStep && lStep > llStep && lStep > 0) {
+			maxInterval++;
+			if (lStep > maxMax) {
+				maxMax = lStep;
+				maxInterval = 0;
+			}
+		}
+    	
+		
+		if (lStep < cStep && lStep < llStep && lStep < 0) {
+			minInterval++;
+			if (lStep < minMin) {
+				minMin = lStep;
+				minInterval = 0;
+			}
+		}
+		
+		if (maxInterval >= pin && minInterval >= pin) {
+			if (maxInterval >= pin*2 || minInterval >= pin*2)
+				count++;
+			count++;
+			maxInterval=0;
+			minInterval=0;
+			maxMax = 0;
+			minMin = 0;
+		}
+		return count;
+    }
+    
+    double cInStep, lInStep, llInStep, smallValue, lsmallValue, llsmallValue;
+    int inMaxInterval = 0, inMinInterval = 0;
+    
+    private int countInHand(double inputStep) {
+
+    	llInStep = lInStep;
+    	lInStep = cInStep;
+    	cInStep = inputStep;
+    	int count = 0;
+    	
+    	if (lInStep < cInStep - NOISE && lInStep < llInStep + NOISE) {
+    		llsmallValue = smallValue;
+			lsmallValue = smallValue;
+			smallValue = lInStep;
+		}
+    	if (llsmallValue > NOISE && lsmallValue > NOISE && smallValue < NOISE) {
+			count = 1;
+		}
+    	
+		return count;
+    }
+    
     public void onAccuracyChanged(Sensor arg0, int arg1) {
  
     }
     
-    private boolean justFinishOneStep(double newData) {
-    	boolean isFinished = false;
-    	detectedDataOfOneStep.add(newData);
-    	detectedDataOfOneStep = eliminateRedundancies(detectedDataOfOneStep);
-    	if (detectedDataOfOneStep.size() >= 5) {
-    		filtDataOfSteps(detectedDataOfOneStep);
-    		detectedDataOfOneStep.clear();
-    	}
-
-      	isFinished = analysisStepDataH(filtedDataOfOneStep);
-    	
-    	if (isFinished) {
-    		filtedDataOfOneStep.clear();
-    		return true;
-    	} else {
-    		if (filtedDataOfOneStep.size() >= 100) {
-    			filtedDataOfOneStep.clear();
-    		}
-    	}
-    	return false;
-    }
-    
-    private ArrayList<Double> eliminateRedundancies(ArrayList<Double> rawData) {
-    	for (int i=0; i<rawData.size(); i++) {
-    		if (((rawData.get(i).floatValue() < NOISE) && 
-    				(rawData.get(i).floatValue() > -NOISE))
-    				|| 
-    				(i>0 && 
-    				((rawData.get(i).floatValue() < rawData.get(i - 1).floatValue() + NOISE) &&
-    				(rawData.get(i).floatValue() > rawData.get(i - 1).floatValue() - NOISE)))) {
-    			rawData.remove(i);
-    		} else {
-    			//break;
-    		}
-    	}
-    	return rawData;
-    }
-    
-    private void filtDataOfSteps(ArrayList<Double> rawData) {
-    	double result = 0;
-    	for (int i = 0; i < rawData.size(); i++) {
-    		result += rawData.get(i).floatValue();
-    	}
-    	result /= rawData.size();
-    	filtedDataOfOneStep.add(result);
-    	thredholdBackup.add(result);
-    	
-    	ACCELRATE = result;
-    	
-    	FileOutputStream fos;
-		try {
-			fos = mContext.openFileOutput("WodeWode.txt", Context.MODE_APPEND);
-			fos.write((result + ",").getBytes());
-			fos.write("\n".getBytes());
-    	    fos.close(); 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-	    
-   }
-    
-    private boolean analysisStepDataH(ArrayList<Double> stepData) {
-    	boolean answerOfAnalysis = false;
-    	boolean dataHasBiggerValue = false;
-    	boolean dataHasSmallerValue = false;
-    	double biggerValue = 0.0;
-    	double smallerValue = 0.0;
-    	
-    	for (int i = 0; i < stepData.size(); i++) {
-    		if (stepData.get(i).floatValue() > THREDHOLD)
-    			answerOfAnalysis = true;
-    	}
-    	
-    	for (int i = 1; i < thredholdBackup.size() - 1; i++) {
-    		if (thredholdBackup.get(i).floatValue() > NOISE) {
-    			if ((thredholdBackup.get(i).floatValue() > thredholdBackup.get(i - 1).floatValue()) && 
-    					(thredholdBackup.get(i).floatValue() > thredholdBackup.get(i + 1).floatValue())) {
-    				double bValue = thredholdBackup.get(i).floatValue();
-    				biggestValue.add(bValue);
-    				thredholdBackup.clear();
-    			}
-    		} 
-    		
-    		if (dataHasBiggerValue && dataHasSmallerValue) {
-    			double diff = biggerValue - smallerValue;
-    			
-    			lastBigger = biggerValue;
-    			lastSmaller = smallerValue;
-    	        
-//    			if (biggerValue > 1.60 && smallerValue > 1.30 && smallerValue < 6) {
-//    				break;
-//    			}
-//    			dataHasBiggerValue = false;
-//    			dataHasSmallerValue = false;
-    			break;
-    		}
-		}
-    	
-    	if (biggestValue.size() > 5) {
-			for (int i = 0; i < biggestValue.size(); i++) {
-				THREDHOLD += biggestValue.get(i).floatValue();
-			}
-			
-			THREDHOLD /= biggestValue.size();
-			biggestValue.clear();
-//			THREDHOLD = (THREDHOLD > 5 ? THREDHOLD : 5 );
-    	}
-    	
-//    	for (int i = 1; i < stepData.size() - 1; i++) {
-//    		
-//    		if (stepData.get(i).floatValue() > NOISE) {
-//    			if ((stepData.get(i).floatValue() > stepData.get(i - 1).floatValue()) && 
-//    					(stepData.get(i).floatValue() > stepData.get(i + 1).floatValue())) {
-//    				dataHasBiggerValue = true;
-//    				biggerValue = stepData.get(i).floatValue();
-//    			}
-//    			
-//    			if ((stepData.get(i).floatValue() < stepData.get(i - 1).floatValue()) && 
-//    					(stepData.get(i).floatValue() < stepData.get(i + 1).floatValue())) {
-//    				dataHasSmallerValue = true;
-//    				smallerValue = stepData.get(i).floatValue();
-//    			}
-//    		} 
-//    		
-//    		
-//    		if (dataHasBiggerValue && dataHasSmallerValue) {
-//    			double diff = biggerValue - smallerValue;
-//    			
-//    			lastBigger = biggerValue;
-//    			lastSmaller = smallerValue;
-//		        
-////    			if (biggerValue > 1.60 && smallerValue > 1.30 && smallerValue < 6) {
-////    				break;
-////    			}
-////    			dataHasBiggerValue = false;
-////    			dataHasSmallerValue = false;
-//    			break;
-//    		}
-//    	}
-//    	answerOfAnalysis = dataHasBiggerValue && dataHasSmallerValue;
-    	return answerOfAnalysis;
-    }
-
 }

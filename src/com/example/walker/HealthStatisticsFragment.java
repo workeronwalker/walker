@@ -39,7 +39,7 @@ public class HealthStatisticsFragment extends Fragment {
 				// TODO Auto-generated method stub
 				FileOutputStream fos;
 				try {
-					fos = getActivity().openFileOutput("DataOutput.txt", Context.MODE_APPEND);
+					fos = getActivity().openFileOutput("inHandData.txt", Context.MODE_APPEND);
 					fos.write("\n".getBytes());
 					fos.write("+++++++++++++++++++".getBytes());
 					fos.write("\n".getBytes());
@@ -51,19 +51,19 @@ public class HealthStatisticsFragment extends Fragment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				try {
-					fos = getActivity().openFileOutput("WodeWode.txt", Context.MODE_APPEND);
-					fos.write("\n".getBytes());
-					fos.write("+++++++++++++++++++".getBytes());
-					fos.write("\n".getBytes());
-            	    fos.close(); 
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					fos = getActivity().openFileOutput("WodeWode.txt", Context.MODE_APPEND);
+//					fos.write("\n".getBytes());
+//					fos.write("+++++++++++++++++++".getBytes());
+//					fos.write("\n".getBytes());
+//            	    fos.close(); 
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 			
 		});

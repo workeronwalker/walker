@@ -15,7 +15,6 @@ public class StepCountFragment extends Fragment {
 		
 	public static int total_step = 0;
 	public static int user_goal = 0;
-	public static int flashCount = 0;
 
 	private static View mView;
 	
@@ -36,10 +35,7 @@ public class StepCountFragment extends Fragment {
 	@SuppressLint("HandlerLeak")
 	Handler flashHandler = new Handler() {
 	    public void handleMessage(Message msg) {
-	        super.handleMessage(msg);
-	        flashCount++;
-	        if (flashCount > 1000000000)
-	        	flashCount = 0;
+	        super.handleMessage(msg);	        
 	        mView.invalidate();
 
 	    }
@@ -76,7 +72,7 @@ public class StepCountFragment extends Fragment {
 	           public void run() {
 	                while (true) {
 	                    try {
-	                        Thread.sleep(30);
+	                        Thread.sleep(20);
 	                    } catch (InterruptedException e) {
 	                        e.printStackTrace();
 	                    }
